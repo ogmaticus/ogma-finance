@@ -1,0 +1,99 @@
+name: Deploy to Selectel
+
+# Секреты репозитория (Settings → Secrets and variables → Actions):
+#   DEPLOY_HOST        — IP сервера
+#   DEPLOY_SSH_KEY     — закрытый ключ, которым GitHub входит на сервер (публичная часть — в /root/.ssh/authorized_keys)
+#   DEPLOY_KNOWN_HOSTS — необязательно: строка из `ssh-keyscan <IP>`; без неё ключ сервера принимается при первом входе
+# Переменная репозитория (необязательно): DEPLOY_DOMAIN — домен для HTTPS.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      full_setup:
+        description: "Полная настройка сервера (setup.sh)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: finance
+          POSTGRES_PASSWORD: finpass
+          POSTGRES_DB: finance_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U finance" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Server tests
+        env:
+          TEST_DATABASE_URL: postgres://finance:finpass@127.0.0.1:5432/finance_test
+        run: npm run test:server
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-24.04
+    if: ${{ vars.DEPLOY_ENABLED != 'false' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check secrets
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          if [ -z "$HOST" ] || [ -z "$KEY" ]; then
+            echo "::error::Не заданы секреты DEPLOY_HOST и DEPLOY_SSH_KEY"
+            exit 1
+          fi
+
+      - name: SSH key
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          if [ -n "$KNOWN" ]; then
+            printf '%s\n' "$KNOWN" > ~/.ssh/known_hosts
+            CHECK=yes
+          else
+            CHECK=accept-new
+          fi
+          cat > ~/.ssh/config <<EOF
+          Host server
+            HostName $HOST
+            User root
+            IdentityFile ~/.ssh/deploy_key
+            StrictHostKeyChecking $CHECK
+            ServerAliveInterval 30
+          EOF
+
+      - name: Upload project
+        run: |
+          ssh server 'command -v rsync >/dev/null || (apt-get update -q && apt-get install -yq rsync)'
+          rsync -az --delete \
+            --exclude .git --exclude .github --exclude node_modules \
+            --exclude /data --exclude /e2e --exclude /test-results --exclude /playwright-report \
+            ./ server:/opt/finance/
+
+      - name: Install and restart
+        env:
+          DOMAIN: ${{ vars.DEPLOY_DOMAIN }}
+          FULL: ${{ inputs.full_setup && '1' || '0' }}
+        run: ssh server "FULL_SETUP=$FULL bash /opt/finance/deploy/remote-deploy.sh $DOMAIN"
