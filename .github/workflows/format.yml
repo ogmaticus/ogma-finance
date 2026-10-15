@@ -1,0 +1,25 @@
+name: Format code
+# Запускается вручную: приводит код к стилю Prettier и коммитит результат в ту же ветку.
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  format:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run format
+      - name: Commit
+        run: |
+          if git diff --quiet; then echo "Нечего форматировать"; exit 0; fi
+          git diff --stat
+          git config user.name "github-actions[bot]"
+          git config user.email "41898237+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Format code with Prettier"
+          git push
