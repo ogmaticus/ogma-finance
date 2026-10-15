@@ -1,8 +1,8 @@
-import { screenshotSourceId, legacyScreenshotSourceId } from "./screenshot-source.js?v=31";
-import { state } from "./state.js?v=31";
-import { renderProfile, cloudFetch, persistBudget } from "./sync.js?v=31";
-import { liveRecords } from "./sync-core.js?v=31";
-import { backupFile } from "./backup-ui.js?v=31";
+import { screenshotSourceId, legacyScreenshotSourceId } from "./screenshot-source.js?v=32";
+import { state } from "./state.js?v=32";
+import { renderProfile, cloudFetch, persistBudget } from "./sync.js?v=32";
+import { liveRecords } from "./sync-core.js?v=32";
+import { backupFile } from "./backup-ui.js?v=32";
 export function openVault() {
   if (state.vaultConnection) return Promise.resolve(state.vaultConnection);
   return new Promise((resolve, reject) => {
@@ -92,6 +92,26 @@ export async function runScreenshotArchive() {
     if (state.page === "Личный кабинет") renderProfile();
   }
 }
+// Screenshots stay on the device unless the user opts in to encrypted cloud copies.
+function cloudScreenshotsKey(owner) {
+  return "finance-cloud-screenshots-" + encodeURIComponent(owner);
+}
+export function cloudScreenshotsEnabled(owner = state.cloudSession?.user?.id) {
+  if (!owner) return false;
+  try {
+    return localStorage.getItem(cloudScreenshotsKey(owner)) === "on";
+  } catch {
+    return false;
+  }
+}
+export function setCloudScreenshots(enabled, owner = state.cloudSession?.user?.id) {
+  if (!owner) return;
+  try {
+    if (enabled) localStorage.setItem(cloudScreenshotsKey(owner), "on");
+    else localStorage.removeItem(cloudScreenshotsKey(owner));
+  } catch {}
+  if (enabled) uploadQueuedScreenshots();
+}
 export function uploadQueuedScreenshots() {
   if (state.vaultUploadJob) return state.vaultUploadJob;
   state.vaultUploadJob = runScreenshotUpload().finally(() => {
@@ -105,7 +125,8 @@ export async function runScreenshotUpload() {
     state.backupBusy ||
     !state.cloudIdentityVerified ||
     !state.cloudSession?.user ||
-    state.vaultUploading
+    state.vaultUploading ||
+    !cloudScreenshotsEnabled()
   )
     return;
   state.vaultUploading = true;

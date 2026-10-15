@@ -1,0 +1,7 @@
+[Unit]
+Description=Finance database backup
+
+[Service]
+Type=oneshot
+User=postgres
+ExecStart=/usr/local/bin/finance-backup

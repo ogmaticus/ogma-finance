@@ -1,38 +1,38 @@
-import { BUDGET_MAX_BYTES } from "./budget-schema.js?v=31";
-import { initializeOperationForm } from "./operation-form.js?v=31";
-import { analyticsView, revealCurrentChartMonth } from "./analytics-ui.js?v=31";
-import { operationsRows, renderOperations } from "./operations-ui.js?v=31";
-import { navigationMarkup, moreMarkup, settingsMarkup, overviewMarkup } from "./shell-ui.js?v=31";
-import { preserveLegacyBudget } from "./migration-copy.js?v=31";
-import { defaultOperationDate, localDate } from "./dates.js?v=31";
-import { screenshotSourceId } from "./screenshot-source.js?v=31";
-import { Money } from "./money.js?v=31";
-import { state } from "./state.js?v=31";
+import { BUDGET_MAX_BYTES } from "./budget-schema.js?v=32";
+import { initializeOperationForm } from "./operation-form.js?v=32";
+import { analyticsView, revealCurrentChartMonth } from "./analytics-ui.js?v=32";
+import { operationsRows, renderOperations } from "./operations-ui.js?v=32";
+import { navigationMarkup, moreMarkup, settingsMarkup, overviewMarkup } from "./shell-ui.js?v=32";
+import { preserveLegacyBudget } from "./migration-copy.js?v=32";
+import { defaultOperationDate, localDate } from "./dates.js?v=32";
+import { screenshotSourceId } from "./screenshot-source.js?v=32";
+import { Money } from "./money.js?v=32";
+import { state } from "./state.js?v=32";
 import {
   emptyPersonalBudget,
   parseBudget,
   liveRecords,
   rememberBudgetBaseline,
-} from "./sync-core.js?v=31";
+} from "./sync-core.js?v=32";
 import {
   initializeMonthSelection,
   setFinanceMonth,
   updateMonthControl,
-} from "./month-picker.js?v=31";
-import { persistBudget, renderProfile } from "./sync.js?v=31";
-import { $, esc, money } from "./format.js?v=31";
-import { categoryKey, accountLast4, renderImport, prepareImportDraft } from "./import-ui.js?v=31";
-import { FinanceData } from "./data-model.js?v=31";
-import { FinanceBudget } from "./budget-core.js?v=31";
-import { budgetView } from "./budget-ui.js?v=31";
-import { categoriesView, editFromCategory, showCategoryHistory } from "./category-history.js?v=31";
-import { askConfirm, animateDialogClose, askForm } from "./ui.js?v=31";
-import { FinanceOCR } from "./ocr-parser.js?v=31";
-import { refineCurrencyGlyphs } from "./ocr-refine.js?v=31";
-import { openLocalScreenshot } from "./file-vault.js?v=31";
-import { account } from "./accounts.js?v=31";
-import { openAccountDelete, editGoal, deleteGoal } from "./record-actions.js?v=31";
-import { initializeEvents } from "./events.js?v=31";
+} from "./month-picker.js?v=32";
+import { persistBudget, renderProfile } from "./sync.js?v=32";
+import { $, esc, money } from "./format.js?v=32";
+import { categoryKey, accountLast4, renderImport, prepareImportDraft } from "./import-ui.js?v=32";
+import { FinanceData } from "./data-model.js?v=32";
+import { FinanceBudget } from "./budget-core.js?v=32";
+import { budgetView } from "./budget-ui.js?v=32";
+import { categoriesView, editFromCategory, showCategoryHistory } from "./category-history.js?v=32";
+import { askConfirm, animateDialogClose, askForm } from "./ui.js?v=32";
+import { FinanceOCR } from "./ocr-parser.js?v=32";
+import { refineCurrencyGlyphs } from "./ocr-refine.js?v=32";
+import { openLocalScreenshot } from "./file-vault.js?v=32";
+import { account } from "./accounts.js?v=32";
+import { openAccountDelete, editGoal, deleteGoal } from "./record-actions.js?v=32";
+import { initializeEvents } from "./events.js?v=32";
 export const seed = {
   accounts: [
     { id: "cash", name: "Наличные", opening: 5000 },

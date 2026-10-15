@@ -1,2 +1,2 @@
-import { initializeTheme } from "./appearance.js?v=31";
+import { initializeTheme } from "./appearance.js?v=32";
 initializeTheme();

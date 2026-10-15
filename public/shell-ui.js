@@ -1,9 +1,9 @@
-import { $, esc, money } from "./format.js?v=31";
-import { localDate, operationDateOrder } from "./dates.js?v=31";
-import { icon, categoryVisual } from "./icons.js?v=31";
-import { go, edit, openOperationFromRow } from "./app.js?v=31";
-import { animateDialogClose } from "./ui.js?v=31";
-import { themeControls } from "./appearance.js?v=31";
+import { $, esc, money } from "./format.js?v=32";
+import { localDate, operationDateOrder } from "./dates.js?v=32";
+import { icon, categoryVisual } from "./icons.js?v=32";
+import { go, edit, openOperationFromRow } from "./app.js?v=32";
+import { animateDialogClose } from "./ui.js?v=32";
+import { themeControls } from "./appearance.js?v=32";
 
 const SECONDARY = [
   ["Аналитика", "analytics", "Расходы и доходы"],

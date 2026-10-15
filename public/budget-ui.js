@@ -1,11 +1,11 @@
-import { Money } from "./money.js?v=31";
-import { state } from "./state.js?v=31";
-import { $, money, esc } from "./format.js?v=31";
-import { icon, categoryVisual } from "./icons.js?v=31";
-import { FinanceBudget } from "./budget-core.js?v=31";
-import { save, render } from "./app.js?v=31";
-import { renderCategoryHistory, showCategoryHistory } from "./category-history.js?v=31";
-import { animateDialogClose, showNotice, askConfirm } from "./ui.js?v=31";
+import { Money } from "./money.js?v=32";
+import { state } from "./state.js?v=32";
+import { $, money, esc } from "./format.js?v=32";
+import { icon, categoryVisual } from "./icons.js?v=32";
+import { FinanceBudget } from "./budget-core.js?v=32";
+import { save, render } from "./app.js?v=32";
+import { renderCategoryHistory, showCategoryHistory } from "./category-history.js?v=32";
+import { animateDialogClose, showNotice, askConfirm } from "./ui.js?v=32";
 export function budgetMonth() {
   return $("#month").value;
 }

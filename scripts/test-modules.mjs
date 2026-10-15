@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { webcrypto } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
+const SHELL = JSON.parse((await import("node:fs")).readFileSync("release.json", "utf8")).shell;
 const nodes = new Map(),
   node = (key) => {
     if (!nodes.has(key))
@@ -52,9 +53,9 @@ globalThis.localStorage = {
 };
 Object.defineProperty(globalThis, "navigator", { value: { onLine: true }, configurable: true });
 Object.defineProperty(globalThis, "crypto", { value: webcrypto, configurable: true });
-const app = await import("../public/app.js?v=31");
-const { state } = await import("../public/state.js?v=31");
-const shell = await import("../public/shell-ui.js?v=31");
+const app = await import("../public/app.js?v=" + SHELL);
+const { state } = await import("../public/state.js?v=" + SHELL);
+const shell = await import("../public/shell-ui.js?v=" + SHELL);
 assert.equal(state.db.schemaVersion, 3);
 assert.ok(state.db.ops.every((op) => Number.isSafeInteger(op.amountMinor)));
 assert.ok(
@@ -156,9 +157,9 @@ console.log(
 );
 
 // Real report + mixed operations: order, refunds, transfers, safe labels and import memory.
-const { FinanceBudget } = await import("../public/budget-core.js?v=31");
-const { FinanceData } = await import("../public/data-model.js?v=31");
-const { BudgetSchema } = await import("../public/budget-schema.js?v=31");
+const { FinanceBudget } = await import("../public/budget-core.js?v=" + SHELL);
+const { FinanceData } = await import("../public/data-model.js?v=" + SHELL);
+const { BudgetSchema } = await import("../public/budget-schema.js?v=" + SHELL);
 const sample = structuredClone(state.db);
 sample.budgetsByMonth["2026-10"] = { Продукты: 10000 };
 sample.ops = [
@@ -258,8 +259,8 @@ assert.equal(
   true,
   "deleting imported rows cannot restore the invitation",
 );
-const { FinanceBackup } = await import("../public/backup-core.js?v=31");
-const { FinanceZip } = await import("../public/backup-zip.js?v=31");
+const { FinanceBackup } = await import("../public/backup-core.js?v=" + SHELL);
+const { FinanceZip } = await import("../public/backup-zip.js?v=" + SHELL);
 const backup = await FinanceBackup.create(imported, []);
 const restored = await FinanceBackup.read(await FinanceZip.build(backup.entries));
 assert.equal(restored.data.hasScreenshotImport, true);
@@ -274,7 +275,7 @@ console.log(
 listeners.get("click")({ target, preventDefault() {} });
 assert.equal(node("#title").textContent, "Бюджет");
 
-const { persistBudget } = await import("../public/sync.js?v=31");
+const { persistBudget } = await import("../public/sync.js?v=" + SHELL);
 const unchangedBudget = JSON.stringify(state.db);
 listeners.get("click")({
   target: { ...target, dataset: { action: "selectTheme", themeMode: "dark" } },
@@ -312,7 +313,7 @@ clickAction({ action: "editBudgetCategoryLimit", category: "Продукты", m
 assert.equal(node("#budgetlimitdialog").open, true);
 assert.equal(Number(node("#budgetlimitamount").value), 100);
 node("#budgetlimitamount").value = "250,01";
-const { saveMonthlyLimit } = await import("../public/budget-ui.js?v=31");
+const { saveMonthlyLimit } = await import("../public/budget-ui.js?v=" + SHELL);
 saveMonthlyLimit({ preventDefault() {} });
 assert.equal(state.db.budgetsByMonth["2026-10"].Продукты, 25001);
 assert.equal(state.db.budgetsByMonth["2026-11"], undefined);
@@ -322,7 +323,7 @@ console.log(
   "PASS: compact budget, empty category disclosure, explicit zero visibility, row opens and saves a cent-accurate limit for the selected month",
 );
 
-const analytics = await import("../public/analytics-ui.js?v=31");
+const analytics = await import("../public/analytics-ui.js?v=" + SHELL);
 const chartData = structuredClone(sample);
 chartData.ops = [
   ...sample.ops,
@@ -386,7 +387,7 @@ console.log(
   "PASS: analytics integer flow, refunds/transfer exclusion, twelve-month year boundary, zero/negative comparisons, prior-only categories, accessible chart data and range changes without budget mutation",
 );
 
-const imports = await import("../public/import-ui.js?v=31");
+const imports = await import("../public/import-ui.js?v=" + SHELL);
 const importDbBefore = state.db;
 state.db = FinanceData.normalize({ ...savedDb, ops: [] });
 state.ocrFiles = [];
@@ -449,7 +450,7 @@ console.log(
   "PASS: three import steps, visible blocking reason, inline valid/invalid date and account, decimal comma, canonical duplicate comparison, successful completion and restart",
 );
 
-const operationForm = await import("../public/operation-form.js?v=31");
+const operationForm = await import("../public/operation-form.js?v=" + SHELL);
 assert.equal(
   operationForm.recentOperationAccount(
     [

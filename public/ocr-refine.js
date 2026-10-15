@@ -1,4 +1,4 @@
-import { FinanceOCR } from "./ocr-parser.js?v=31";
+import { FinanceOCR } from "./ocr-parser.js?v=32";
 export async function refineCurrencyGlyphs(
   worker,
   image,

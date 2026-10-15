@@ -1,8 +1,8 @@
-import { state } from "./state.js?v=31";
-import { $, esc } from "./format.js?v=31";
-import { localDate, operationDateOrder } from "./dates.js?v=31";
-import { FinanceData } from "./data-model.js?v=31";
-import { icon, categoryVisual } from "./icons.js?v=31";
+import { state } from "./state.js?v=32";
+import { $, esc } from "./format.js?v=32";
+import { localDate, operationDateOrder } from "./dates.js?v=32";
+import { FinanceData } from "./data-model.js?v=32";
+import { icon, categoryVisual } from "./icons.js?v=32";
 export function recentOperationAccount(ops, accounts) {
   return (
     FinanceData.live(ops)

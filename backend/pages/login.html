@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Вход · Финансы</title>
+    <link rel="icon" type="image/svg+xml" href="/brand.svg" />
+    <link rel="stylesheet" href="/design-tokens.css" />
+    <link rel="stylesheet" href="/auth/auth.css" />
+    <script type="module" src="/appearance-init.js"></script>
+    <script type="module" src="/auth/login.js"></script>
+  </head>
+  <body>
+    <main class="auth-card">
+      <div class="brand"><img src="/brand.svg" alt="" />Финансы</div>
+
+      <form id="emailstep" novalidate>
+        <h1>Вход и регистрация</h1>
+        <p>Пришлём код на почту. Пароль не нужен.</p>
+        <label for="email">Электронная почта</label>
+        <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254" />
+        <label class="consent">
+          <input id="consent" type="checkbox" required />
+          <span>Я принимаю <a href="/privacy" target="_blank" rel="noopener">политику обработки персональных данных</a> и даю <a href="/consent" target="_blank" rel="noopener">согласие на обработку персональных данных</a></span>
+        </label>
+        <button id="sendcode" type="submit">Получить код</button>
+        <p class="error" id="emailerror" role="alert"></p>
+      </form>
+
+      <form id="codestep" novalidate hidden>
+        <h1>Введите код</h1>
+        <p>Отправили 6 цифр на <b id="sentto"></b>. Код действует 10 минут.</p>
+        <label for="code">Код из письма</label>
+        <input id="code" class="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required />
+        <button id="verify" type="submit">Войти</button>
+        <button id="back" class="secondary" type="button">Изменить почту</button>
+        <p class="error" id="codeerror" role="alert"></p>
+        <p class="note">Письмо не пришло? Проверьте папку «Спам». Новый код можно запросить через минуту.</p>
+      </form>
+    </main>
+  </body>
+</html>

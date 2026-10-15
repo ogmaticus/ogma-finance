@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
-import { state } from "../public/state.js?v=31";
-import {
+const SHELL = JSON.parse((await import("node:fs")).readFileSync("release.json", "utf8")).shell;
+const { state } = await import("../public/state.js?v=" + SHELL);
+const {
   operationGroups,
   operationDateTitle,
   operationsRows,
@@ -9,7 +10,7 @@ import {
   toggleOperationFilters,
   updateOperationFilters,
   resetOperationFilters,
-} from "../public/operations-ui.js?v=31";
+} = await import("../public/operations-ui.js?v=" + SHELL);
 const accounts = [
   { id: "a", name: "Основная", last4: "1144", openingMinor: 0 },
   { id: "b", name: "Накопления", openingMinor: 0 },

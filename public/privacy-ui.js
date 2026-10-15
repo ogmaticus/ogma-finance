@@ -1,12 +1,13 @@
-import { state } from "./state.js?v=31";
+import { state } from "./state.js?v=32";
 import {
   vaultDeleteOwned,
   vaultAll,
   retryScreenshotArchives,
   uploadQueuedScreenshots,
-} from "./file-vault.js?v=31";
-import { cacheBudgetKey, emptyPersonalBudget, budgetStorageKey } from "./sync-core.js?v=31";
-import { offlineAccess, forgetOfflineAccess } from "./pwa.js?v=31";
+  cloudScreenshotsEnabled,
+} from "./file-vault.js?v=32";
+import { cacheBudgetKey, emptyPersonalBudget, budgetStorageKey } from "./sync-core.js?v=32";
+import { offlineAccess, forgetOfflineAccess } from "./pwa.js?v=32";
 import {
   syncBudget,
   renderProfile,
@@ -14,11 +15,11 @@ import {
   cloudFetch,
   cloudCache,
   refreshProfile,
-} from "./sync.js?v=31";
-import { $ } from "./format.js?v=31";
-import { render } from "./app.js?v=31";
-import { animateDialogClose, askConfirm, showNotice, askForm } from "./ui.js?v=31";
-import { exportFullBackup } from "./backup-ui.js?v=31";
+} from "./sync.js?v=32";
+import { $ } from "./format.js?v=32";
+import { render } from "./app.js?v=32";
+import { animateDialogClose, askConfirm, showNotice, askForm } from "./ui.js?v=32";
+import { exportFullBackup } from "./backup-ui.js?v=32";
 export function privacyOwner() {
   return state.cloudSession?.user?.id || "guest";
 }
@@ -70,11 +71,15 @@ export async function openLogoutDialog() {
     const owner = privacyOwner(),
       files = await vaultAll();
     privacyContext(owner);
-    const unsent = files.filter((record) => record.owner === owner && !record.cloudFileId).length,
-      pending = state.pendingScreenshotArchives.some((record) => record.owner === owner);
-    if (!state.cloudDirty && !unsent && !pending) return logoutAccount("discard");
+    const cloud = cloudScreenshotsEnabled(owner),
+      local = files.filter((record) => record.owner === owner && !record.cloudFileId).length,
+      unsent = cloud ? local : 0,
+      pending = cloud && state.pendingScreenshotArchives.some((record) => record.owner === owner);
+    if (!state.cloudDirty && !unsent && !pending && !local) return logoutAccount("discard");
     $("#logoutmessage").textContent =
-      `На устройстве есть ${state.cloudDirty ? "несохранённые изменения бюджета" : ""}${state.cloudDirty && (unsent || pending) ? " и " : ""}${unsent || pending ? "неотправленные скриншоты" : ""}. После выхода данные аккаунта будут удалены с этого устройства.`;
+      !state.cloudDirty && !unsent && !pending
+        ? "Скриншоты хранятся только на этом устройстве и будут удалены при выходе. Чтобы сохранить их, скачайте полную копию."
+        : `На устройстве есть ${state.cloudDirty ? "несохранённые изменения бюджета" : ""}${state.cloudDirty && (unsent || pending) ? " и " : ""}${unsent || pending ? "неотправленные скриншоты" : ""}. После выхода данные аккаунта будут удалены с этого устройства.`;
     $("#logouterror").textContent = "";
     $("#logoutdialog").showModal();
   } catch (error) {
@@ -100,10 +105,11 @@ export async function logoutAccount(mode) {
       await syncBudget();
       state.privacyAllowJobs = false;
       const records = await vaultAll();
+      const cloud = cloudScreenshotsEnabled(owner);
       if (
         state.cloudDirty ||
-        state.pendingScreenshotArchives.some((record) => record.owner === owner) ||
-        records.some((record) => record.owner === owner && !record.cloudFileId)
+        (cloud && state.pendingScreenshotArchives.some((record) => record.owner === owner)) ||
+        (cloud && records.some((record) => record.owner === owner && !record.cloudFileId))
       )
         throw Error("Не всё удалось сохранить. Скачайте копию или повторите синхронизацию.");
     }
@@ -239,3 +245,42 @@ document.getElementById("logoutdialog")?.addEventListener(
   },
   { capture: true },
 );
+
+export async function deleteWholeAccount() {
+  const owner = privacyOwner();
+  if (owner === "guest" || state.cloudLogoutBusy || state.backupBusy) return;
+  if (
+    !(await askConfirm(
+      "Удалить аккаунт? Будут удалены бюджет, серверные копии, скриншоты и данные входа, а согласие на обработку данных — отозвано. Отменить это нельзя.",
+      "Продолжить",
+    ))
+  )
+    return;
+  const confirmation = await askForm({
+    title: "Удаление аккаунта",
+    message: "Перед удалением можно скачать полную копию в разделе «Копии бюджета».",
+    fields: [{ name: "confirmation", label: "Введите УДАЛИТЬ", required: true }],
+    confirmLabel: "Удалить аккаунт",
+  });
+  if (confirmation?.confirmation?.trim().toUpperCase() !== "УДАЛИТЬ") return;
+  let finish;
+  try {
+    privacyContext(owner);
+    finish = beginPrivateAction();
+    await awaitPrivateJobs();
+    if (!state.cloudIdentityVerified) throw Error("Подключитесь к интернету, чтобы удалить аккаунт.");
+    await cloudFetch("/api/account", { method: "DELETE" });
+    await purgeOwnerLocalData(owner);
+    clearTimeout(state.cloudTimer);
+    state.cloudDirty = false;
+    state.cloudSession = null;
+    state.cloudIdentityVerified = false;
+    hydrateBudget(emptyPersonalBudget());
+    window.location.assign("/login");
+  } catch (error) {
+    state.cloudError = error.message;
+    await showNotice("Удаление аккаунта не завершилось: " + error.message);
+  } finally {
+    finish?.();
+  }
+}

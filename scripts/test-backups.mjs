@@ -206,6 +206,7 @@ const elements = new Map(),
 Object.assign(c, {
   db: structuredClone(previous),
   cloudSession: { user: { id: "bob" } },
+  cloudScreenshotsEnabled: () => true,
   cloudIdentityVerified: true,
   cloudBusy: false,
   cloudDirty: false,
@@ -345,6 +346,24 @@ assert.equal(
 console.log(
   "PASS: export includes more than 100 server originals and excludes another user’s local files",
 );
+
+// With cloud copies switched off (the default) an account restore keeps images on the device only.
+{
+  let uploads = 0;
+  c.cloudScreenshotsEnabled = () => false;
+  c.cloudFetch = async (path) => {
+    if (path === "/api/files") uploads++;
+    return { revision: 9, updatedAt: "2026-10-14T00:00:00Z" };
+  };
+  c.archive = zip;
+  c.db = structuredClone(previous);
+  await vm.runInContext("restoreFullBackup(archive)", c);
+  assert.equal(uploads, 0);
+  assert.equal(c.db.ops[0].screenshotId, undefined);
+  assert.ok(c.db.ops[0].sourceId.startsWith("backup-"));
+  c.cloudScreenshotsEnabled = () => true;
+  console.log("PASS: account restore keeps screenshots local unless cloud copies are enabled");
+}
 
 // A server-confirmed restore remains a success even when the optional device cache is full.
 c.cloudFetch = async (path) =>

@@ -4,22 +4,22 @@ import {
   chooseOperationDate,
   showOperationDate,
   updateOperationForm,
-} from "./operation-form.js?v=31";
-import { setAnalyticsRange } from "./analytics-ui.js?v=31";
+} from "./operation-form.js?v=32";
+import { setAnalyticsRange } from "./analytics-ui.js?v=32";
 import {
   toggleOperationFilters,
   updateOperationFilters,
   resetOperationFilters,
-} from "./operations-ui.js?v=31";
+} from "./operations-ui.js?v=32";
 import {
   navigatePage,
   openAddChooser,
   closeAddChooser,
   chooseAdd,
   openOverviewOperation,
-} from "./shell-ui.js?v=31";
-import { downloadMigrationCopy } from "./migration-copy.js?v=31";
-import { selectTheme, toggleTheme } from "./appearance.js?v=31";
+} from "./shell-ui.js?v=32";
+import { downloadMigrationCopy } from "./migration-copy.js?v=32";
+import { selectTheme, toggleTheme } from "./appearance.js?v=32";
 import {
   go,
   edit,
@@ -37,16 +37,16 @@ import {
   editGoalById,
   deleteGoalById,
   createGoal,
-} from "./app.js?v=31";
-import { shiftFinanceMonth, openMonthPicker, applyMonthPicker } from "./month-picker.js?v=31";
+} from "./app.js?v=32";
+import { shiftFinanceMonth, openMonthPicker, applyMonthPicker } from "./month-picker.js?v=32";
 import {
   prepareOfflineOCR,
   applyFinanceUpdate,
   installApplication,
   changeOfflineAccess,
-} from "./pwa.js?v=31";
-import { retryScreenshotArchives } from "./file-vault.js?v=31";
-import { animateDialogClose, showNotice } from "./ui.js?v=31";
+} from "./pwa.js?v=32";
+import { retryScreenshotArchives } from "./file-vault.js?v=32";
+import { animateDialogClose, showNotice } from "./ui.js?v=32";
 import {
   restartImport,
   showImportBulkDate,
@@ -72,24 +72,24 @@ import {
   changeImportEditType,
   changeImportEditAccount,
   closeImportEditor,
-} from "./import-ui.js?v=31";
-import { saveAccountForm, closeAccountEditor } from "./accounts.js?v=31";
-import { logoutAccount, downloadLogoutCopy } from "./privacy-ui.js?v=31";
-import { confirmAccountDelete, updateAccountDeleteMode } from "./record-actions.js?v=31";
+} from "./import-ui.js?v=32";
+import { saveAccountForm, closeAccountEditor } from "./accounts.js?v=32";
+import { logoutAccount, downloadLogoutCopy } from "./privacy-ui.js?v=32";
+import { confirmAccountDelete, updateAccountDeleteMode } from "./record-actions.js?v=32";
 import {
   saveMonthlyLimit,
   showBudgetCategoryHistory,
   editBudgetCategoryLimit,
   showAnalyticsCategoryHistory,
   copyPriorMonthBudget,
-} from "./budget-ui.js?v=31";
+} from "./budget-ui.js?v=32";
 import {
   downloadFullBackup,
   downloadBudgetJson,
   restoreSelectedBackup,
   restoreLocalBackup,
   refreshAccountProfile,
-} from "./backup-ui.js?v=31";
+} from "./backup-ui.js?v=32";
 import {
   showHistoryCategory,
   editCategoryTileLimit,
@@ -99,7 +99,7 @@ import {
   chooseHistoryMonth,
   nextHistoryMonth,
   clearHistoryMonth,
-} from "./category-history.js?v=31";
+} from "./category-history.js?v=32";
 import {
   syncAccountBudget,
   transferDeviceBudget,
@@ -109,7 +109,9 @@ import {
   refreshImageArchive,
   removeArchivedScreenshot,
   removeAccountData,
-} from "./sync.js?v=31";
+  removeWholeAccount,
+  toggleCloudScreenshots,
+} from "./sync.js?v=32";
 export function openProfile(event, element) {
   return go("Личный кабинет");
 }
@@ -303,4 +305,6 @@ const actions = {
   refreshImageArchive,
   removeArchivedScreenshot,
   removeAccountData,
+  removeWholeAccount,
+  toggleCloudScreenshots,
 };

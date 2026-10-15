@@ -1,6 +1,6 @@
-import { BudgetSchema } from "./budget-schema.js?v=31";
-import { FinanceData } from "./data-model.js?v=31";
-import { FinanceZip } from "./backup-zip.js?v=31";
+import { BudgetSchema } from "./budget-schema.js?v=32";
+import { FinanceData } from "./data-model.js?v=32";
+import { FinanceZip } from "./backup-zip.js?v=32";
 export const FinanceBackup = (() => {
   const encoder = new TextEncoder();
   function validateBudget(input) {

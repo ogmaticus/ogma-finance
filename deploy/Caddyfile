@@ -1,0 +1,11 @@
+__SITE__ {
+	encode gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		-Server
+	}
+	request_body {
+		max_size 12MB
+	}
+	reverse_proxy 127.0.0.1:3000
+}

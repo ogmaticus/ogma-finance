@@ -1,6 +1,6 @@
 {
   "name": "finance-app",
-  "version": "1.7.0",
+  "version": "2.0.0",
   "private": true,
   "engines": {
     "node": ">=22.13.0"
@@ -16,7 +16,9 @@
     "format": "prettier --write public/*.js public/app.html public/*.css server/*.ts",
     "format:check": "prettier --check public/*.js public/app.html public/*.css server/*.ts",
     "prebuild": "node scripts/generate-release.mjs",
-    "postbuild": "node scripts/protect-app-shell.mjs"
+    "postbuild": "node scripts/protect-app-shell.mjs",
+    "server": "node --experimental-transform-types --no-warnings --import ./backend/register.mjs backend/main.mjs",
+    "test:server": "node --experimental-transform-types --no-warnings --import ./backend/register.mjs --test --test-concurrency=1 backend/test/server.test.mjs"
   },
   "dependencies": {
     "next": "16.3.4",

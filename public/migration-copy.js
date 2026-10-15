@@ -1,4 +1,4 @@
-import { state } from "./state.js?v=31";
+import { state } from "./state.js?v=32";
 export function preserveLegacyBudget(data) {
   if (!data || data.schemaVersion >= 3) return;
   const owner = state.cloudSession?.user?.id || "guest";

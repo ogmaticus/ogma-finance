@@ -1,9 +1,9 @@
-import { preserveLegacyBudget } from "./migration-copy.js?v=31";
-import { icon } from "./icons.js?v=31";
-import { APP_VERSION } from "./release-info.js?v=31";
-import { themeControls } from "./appearance.js?v=31";
-import { BudgetSchema } from "./budget-schema.js?v=31";
-import { state } from "./state.js?v=31";
+import { preserveLegacyBudget } from "./migration-copy.js?v=32";
+import { icon } from "./icons.js?v=32";
+import { APP_VERSION } from "./release-info.js?v=32";
+import { themeControls } from "./appearance.js?v=32";
+import { BudgetSchema } from "./budget-schema.js?v=32";
+import { state } from "./state.js?v=32";
 import {
   parseBudget,
   rememberBudgetBaseline,
@@ -13,21 +13,27 @@ import {
   emptyPersonalBudget,
   isBudget,
   mergeBudgets,
-} from "./sync-core.js?v=31";
-import { FinanceData } from "./data-model.js?v=31";
-import { $, esc } from "./format.js?v=31";
+} from "./sync-core.js?v=32";
+import { FinanceData } from "./data-model.js?v=32";
+import { $, esc } from "./format.js?v=32";
 import {
   purgeOwnerLocalData,
   openLogoutDialog,
   deleteScreenshot,
   deleteAllMyData,
-} from "./privacy-ui.js?v=31";
-import { uploadQueuedScreenshots, claimGuestArchivesForMigration } from "./file-vault.js?v=31";
-import { offlineAccess, forgetOfflineAccess, pwaCardHtml } from "./pwa.js?v=31";
-import { go, render, seed } from "./app.js?v=31";
-import { showNotice, askConfirm } from "./ui.js?v=31";
-import { FinanceBackup } from "./backup-core.js?v=31";
-import { backupControls } from "./backup-ui.js?v=31";
+  deleteWholeAccount,
+} from "./privacy-ui.js?v=32";
+import {
+  uploadQueuedScreenshots,
+  claimGuestArchivesForMigration,
+  cloudScreenshotsEnabled,
+  setCloudScreenshots,
+} from "./file-vault.js?v=32";
+import { offlineAccess, forgetOfflineAccess, pwaCardHtml } from "./pwa.js?v=32";
+import { go, render, seed } from "./app.js?v=32";
+import { showNotice, askConfirm } from "./ui.js?v=32";
+import { FinanceBackup } from "./backup-core.js?v=32";
+import { backupControls } from "./backup-ui.js?v=32";
 export const baseCategories = [
   "Продукты",
   "Транспорт",
@@ -256,8 +262,8 @@ export async function initializeCloud() {
       if (access) {
         state.cloudSession = {
           user: access.user,
-          signInUrl: "/signin-with-chatgpt?return_to=%2Fapp.html",
-          signOutUrl: "/signout-with-chatgpt?return_to=%2Fapp.html",
+          signInUrl: "/login?return_to=%2Ffinance",
+          signOutUrl: "/logout?return_to=%2Ffinance",
         };
         state.cloudIdentityVerified = false;
       }
@@ -506,7 +512,7 @@ export async function restoreCloudVersion(revision) {
 export function renderProfile() {
   const user = state.cloudSession?.user;
   $("#content").innerHTML =
-    `<div class="card profile-card"><span class="import-kicker">ЛИЧНЫЙ КАБИНЕТ</span><h2>${user ? esc(user.name) : "Сохраните бюджет в аккаунте"}</h2>${user ? `<p class="muted">${esc(user.email)}</p><div class="profile-status">${esc(state.cloudState === "synced" ? "Бюджет сохранён на сервере" : state.cloudState === "waiting-import" ? "Можно перенести бюджет из браузера" : state.cloudState === "conflict" ? "Есть изменения на другом устройстве" : state.cloudState === "offline" ? "Сервер недоступен. Изменения остаются на устройстве" : "Сохранение бюджета…")}</div><small>${state.cloudUpdatedAt ? "Последнее сохранение: " + esc(new Date(state.cloudUpdatedAt).toLocaleString("ru-RU")) : ""}</small>` : "<p>Вход через ChatGPT. Ваш бюджет будет доступен после входа с другого устройства.</p>"}<div class="actions" style="margin-top:var(--gap-16)">${user ? `<button data-action="syncAccountBudget" data-action-event="click">Синхронизировать</button>${state.cloudMigrationAvailable ? '<button class="primary" data-action="transferDeviceBudget" data-action-event="click">Перенести бюджет этого браузера</button>' : ""}${state.cloudConflict ? '<button class="primary" data-action="reviewCloudConflict" data-action-event="click">Сверить изменения</button>' : ""}<button class="button-link" data-action="openAccountLogout" data-action-event="click">Выйти</button>` : `<a class="button-link primary" target="_top" href="${esc(state.cloudSession?.signInUrl || "/signin-with-chatgpt?return_to=%2Fapp.html")}">Войти через ChatGPT</a>`}</div><p class="profile-error" role="status">${esc(state.cloudError || state.vaultError)}</p></div>${pwaCardHtml()}<div class="card"><h2>Копии бюджета</h2>${backupControls()}${state.cloudVersions.length ? state.cloudVersions.map((v) => `<div class="row"><div><b>Версия ${v.revision}</b><br><small>${esc(new Date(v.created_at).toLocaleString("ru-RU"))}</small></div><button data-action="restoreSelectedCloudVersion" data-action-event="click" data-revision="${esc(v.revision)}">Восстановить</button></div>`).join("") : '<p class="muted">Снимки создаются раз в 30 минут и перед импортом, восстановлением или слиянием. Хранятся последние 30 и месячные копии за год.</p>'}</div><div class="card"><h2>Скриншоты</h2><p class="muted">Новые скриншоты сохраняются при добавлении операций. Старые изображения, которые приложение раньше не сохраняло, нужно загрузить заново.</p>${user ? '<button data-action="refreshImageArchive" data-action-event="click">Обновить архив</button>' : '<p class="muted">Для серверного архива войдите в аккаунт.</p>'}<div class="profile-files">${state.cloudFiles.map((f) => `<div class="profile-file"><a target="_blank" rel="noopener" href="/api/files/${f.id}"><img loading="lazy" src="/api/files/${f.id}" alt="${esc(f.name)}"><small>${esc(f.name)}</small></a><button class="negative" data-file-id="${esc(f.id)}" data-action="removeArchivedScreenshot" data-action-event="click">Удалить скриншот</button></div>`).join("")}</div></div><div class="card"><h2>Управление данными</h2><button class="negative" data-action="removeAccountData" data-action-event="click">Удалить все мои данные</button></div>`;
+    `<div class="card profile-card"><span class="import-kicker">ЛИЧНЫЙ КАБИНЕТ</span><h2>${user ? esc(user.name) : "Сохраните бюджет в аккаунте"}</h2>${user ? `${user.name !== user.email ? `<p class="muted">${esc(user.email)}</p>` : ""}<div class="profile-status">${esc(state.cloudState === "synced" ? "Бюджет сохранён на сервере" : state.cloudState === "waiting-import" ? "Можно перенести бюджет из браузера" : state.cloudState === "conflict" ? "Есть изменения на другом устройстве" : state.cloudState === "offline" ? "Сервер недоступен. Изменения остаются на устройстве" : "Сохранение бюджета…")}</div><small>${state.cloudUpdatedAt ? "Последнее сохранение: " + esc(new Date(state.cloudUpdatedAt).toLocaleString("ru-RU")) : ""}</small>` : "<p>Войдите по почте — бюджет будет доступен на всех ваших устройствах. Пароль не нужен.</p>"}<div class="actions" style="margin-top:var(--gap-16)">${user ? `<button data-action="syncAccountBudget" data-action-event="click">Синхронизировать</button>${state.cloudMigrationAvailable ? '<button class="primary" data-action="transferDeviceBudget" data-action-event="click">Перенести бюджет этого браузера</button>' : ""}${state.cloudConflict ? '<button class="primary" data-action="reviewCloudConflict" data-action-event="click">Сверить изменения</button>' : ""}<button class="button-link" data-action="openAccountLogout" data-action-event="click">Выйти</button>` : `<a class="button-link primary" target="_top" href="${esc(state.cloudSession?.signInUrl || "/login?return_to=%2Ffinance")}">Войти</a>`}</div><p class="profile-error" role="status">${esc(state.cloudError || state.vaultError)}</p></div>${pwaCardHtml()}<div class="card"><h2>Копии бюджета</h2>${backupControls()}${state.cloudVersions.length ? state.cloudVersions.map((v) => `<div class="row"><div><b>Версия ${v.revision}</b><br><small>${esc(new Date(v.created_at).toLocaleString("ru-RU"))}</small></div><button data-action="restoreSelectedCloudVersion" data-action-event="click" data-revision="${esc(v.revision)}">Восстановить</button></div>`).join("") : '<p class="muted">Снимки создаются раз в 30 минут и перед импортом, восстановлением или слиянием. Хранятся последние 30 и месячные копии за год.</p>'}</div><div class="card"><h2>Скриншоты</h2><p class="muted">Скриншоты распознаются на устройстве и по умолчанию хранятся только на нём. Облачная копия нужна, чтобы открывать исходники с других устройств; на сервере она хранится в зашифрованном виде.</p>${user ? `<label class="offline-choice"><input type="checkbox" ${cloudScreenshotsEnabled() ? "checked" : ""} data-action="toggleCloudScreenshots" data-action-event="change"><span>Хранить копии скриншотов в облаке<small>Выключено — исходники остаются только на этом устройстве и удаляются при выходе.</small></span></label>${cloudScreenshotsEnabled() ? '<button data-action="refreshImageArchive" data-action-event="click">Обновить архив</button>' : ""}` : '<p class="muted">Облачные копии доступны после входа.</p>'}<div class="profile-files">${state.cloudFiles.map((f) => `<div class="profile-file"><a target="_blank" rel="noopener" href="/api/files/${f.id}"><img loading="lazy" src="/api/files/${f.id}" alt="${esc(f.name)}"><small>${esc(f.name)}</small></a><button class="negative" data-file-id="${esc(f.id)}" data-action="removeArchivedScreenshot" data-action-event="click">Удалить скриншот</button></div>`).join("")}</div></div><div class="card"><h2>Управление данными</h2><div class="actions"><button class="negative" data-action="removeAccountData" data-action-event="click">Удалить все мои данные</button>${user ? '<button class="negative" data-action="removeWholeAccount" data-action-event="click">Удалить аккаунт</button>' : ""}</div><p class="muted"><a href="/privacy" target="_blank" rel="noopener">Политика обработки данных</a> · <a href="/consent" target="_blank" rel="noopener">Согласие</a></p></div>`;
   $("#content").innerHTML += themeControls();
   $("#content").innerHTML += `<p class="app-version">Версия ${APP_VERSION}</p>`;
 }
@@ -631,4 +637,11 @@ export function removeArchivedScreenshot(event, element) {
 }
 export function removeAccountData(event, element) {
   return deleteAllMyData();
+}
+export function removeWholeAccount(event, element) {
+  return deleteWholeAccount();
+}
+export function toggleCloudScreenshots(event, element) {
+  setCloudScreenshots(element.checked);
+  renderProfile();
 }

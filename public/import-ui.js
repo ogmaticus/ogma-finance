@@ -1,9 +1,9 @@
-import { icon, categoryVisual } from "./icons.js?v=31";
-import { Money } from "./money.js?v=31";
-import { state } from "./state.js?v=31";
-import { liveRecords } from "./sync-core.js?v=31";
-import { $, esc } from "./format.js?v=31";
-import { FinanceOCR } from "./ocr-parser.js?v=31";
+import { icon, categoryVisual } from "./icons.js?v=32";
+import { Money } from "./money.js?v=32";
+import { state } from "./state.js?v=32";
+import { liveRecords } from "./sync-core.js?v=32";
+import { $, esc } from "./format.js?v=32";
+import { FinanceOCR } from "./ocr-parser.js?v=32";
 import {
   merchantKey,
   recognizeScreenshots,
@@ -12,9 +12,9 @@ import {
   render,
   cancelOCR,
   demo,
-} from "./app.js?v=31";
-import { animateDialogClose, askConfirm } from "./ui.js?v=31";
-import { archiveImportedScreenshots } from "./file-vault.js?v=31";
+} from "./app.js?v=32";
+import { animateDialogClose, askConfirm } from "./ui.js?v=32";
+import { archiveImportedScreenshots } from "./file-vault.js?v=32";
 export function importAccounts() {
   return [...liveRecords("accounts"), ...state.importPendingAccounts];
 }

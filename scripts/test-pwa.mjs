@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+const SHELL = JSON.parse((await import("node:fs")).readFileSync("release.json", "utf8")).shell;
 import vm from "./test-vm.mjs";
 import { readFileSync, existsSync } from "node:fs";
 const manifest = JSON.parse(readFileSync("public/manifest.webmanifest", "utf8"));
@@ -59,7 +60,7 @@ let work;
 listeners.install({ waitUntil: (p) => (work = p) });
 await work;
 assert.equal(skips, 0, "new release must wait for approval");
-const current = cacheStore.get("finance-shell-31");
+const current = cacheStore.get("finance-shell-" + SHELL);
 assert.ok(current);
 assert.equal(
   [...current.keys()].some((k) => k.includes("/api/")),
@@ -80,9 +81,9 @@ function respond(url, mode = "cors", method = "GET") {
   return response;
 }
 assert.ok(
-  (await (await respond("/app.html?source=installed", "navigate")).text()).includes("app.js?v=31"),
+  (await (await respond("/app.html?source=installed", "navigate")).text()).includes("app.js?v=" + SHELL),
 );
-assert.ok((await (await respond("/sync.js?v=31")).text()).includes("reconnectCloud"));
+assert.ok((await (await respond("/sync.js?v=" + SHELL)).text()).includes("reconnectCloud"));
 assert.equal(
   [...current.keys()].some((k) => k.includes("/ocr/")),
   false,

@@ -109,7 +109,7 @@ export async function handleBudget(request: Request, identity: Identity, env: St
     if (!state.deleting) {
       const claimed = await db
         .prepare(
-          "INSERT INTO owner_data_state (owner,generation,deleting) VALUES (?,1,1) ON CONFLICT(owner) DO UPDATE SET generation=generation+1,deleting=1 WHERE deleting=0 RETURNING generation",
+          "INSERT INTO owner_data_state (owner,generation,deleting) VALUES (?,1,1) ON CONFLICT(owner) DO UPDATE SET generation=owner_data_state.generation+1,deleting=1 WHERE owner_data_state.deleting=0 RETURNING generation",
         )
         .bind(owner)
         .first<{ generation: number }>();

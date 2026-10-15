@@ -1,0 +1,35 @@
+[Unit]
+Description=Finance app (server v2)
+After=network-online.target postgresql.service
+Wants=network-online.target postgresql.service
+
+[Service]
+Type=simple
+User=finance
+Group=finance
+WorkingDirectory=/opt/finance
+EnvironmentFile=/etc/finance/finance.env
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node --experimental-transform-types --no-warnings --import ./backend/register.mjs backend/main.mjs
+Restart=always
+RestartSec=3
+TimeoutStopSec=15
+
+# Hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictNamespaces=true
+ReadWritePaths=/var/lib/finance
+CapabilityBoundingSet=
+MemoryMax=600M
+
+[Install]
+WantedBy=multi-user.target
