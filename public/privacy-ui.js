@@ -268,7 +268,8 @@ export async function deleteWholeAccount() {
     privacyContext(owner);
     finish = beginPrivateAction();
     await awaitPrivateJobs();
-    if (!state.cloudIdentityVerified) throw Error("Подключитесь к интернету, чтобы удалить аккаунт.");
+    if (!state.cloudIdentityVerified)
+      throw Error("Подключитесь к интернету, чтобы удалить аккаунт.");
     await cloudFetch("/api/account", { method: "DELETE" });
     await purgeOwnerLocalData(owner);
     clearTimeout(state.cloudTimer);
