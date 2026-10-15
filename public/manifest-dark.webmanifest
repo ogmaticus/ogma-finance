@@ -1,0 +1,32 @@
+{
+  "id": "/",
+  "name": "Финансы — личный бюджет",
+  "short_name": "Финансы",
+  "description": "Ваш бюджет, цели и операции из банковских скриншотов",
+  "lang": "ru",
+  "start_url": "/finance?source=installed",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0d1320",
+  "theme_color": "#0d1320",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

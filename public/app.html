@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#f6f8fb" />
+    <meta name="color-scheme" content="light dark" />
+    <script type="module" src="appearance-init.js?v=31"></script>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Финансы" />
+    <link rel="apple-touch-icon" href="/icons/icon-180.png" />
+    <title>Финансы · личный бюджет</title>
+    <link rel="icon" type="image/svg+xml" href="brand.svg" />
+    <link rel="stylesheet" href="base.css?v=31" />
+    <link rel="stylesheet" href="theme.css?v=31" />
+    <link rel="stylesheet" href="design-tokens.css?v=31" />
+    <link rel="stylesheet" href="appearance.css?v=31" />
+    <link rel="stylesheet" href="shell.css?v=31" />
+  </head>
+  <body>
+    <aside class="shell-sidebar">
+      <div class="brand"><img src="brand.svg" alt="" />финансы</div>
+      <nav id="nav" aria-label="Основная навигация"></nav>
+    </aside>
+    <p id="backupstatus" class="backup-status" role="status" aria-live="polite" hidden></p>
+    <main>
+      <header id="app-header" class="app-header">
+        <h1 id="title" tabindex="-1"></h1>
+        <div class="actions">
+          <button
+            type="button"
+            class="import-back"
+            data-action="backFromImport"
+            data-action-event="click"
+            aria-label="Назад из импорта"
+          >
+            ‹ Назад
+          </button>
+          <button
+            type="button"
+            id="theme-toggle"
+            class="theme-toggle"
+            data-action="toggleTheme"
+            data-action-event="click"
+            aria-label="Переключить тему"
+          >
+            Тема
+          </button>
+          <button
+            id="cloudbadge"
+            class="cloud-badge"
+            data-action="openProfile"
+            data-action-event="click"
+          >
+            Подключение…
+          </button>
+          <div class="month-control" role="group" aria-label="Выбор месяца">
+            <button
+              type="button"
+              id="monthprevious"
+              aria-label="Предыдущий месяц"
+              data-action="previousFinanceMonth"
+              data-action-event="click"
+            >
+              ‹</button
+            ><button
+              type="button"
+              id="monthlabel"
+              class="month-label"
+              aria-haspopup="dialog"
+              data-action="chooseFinanceMonth"
+              data-action-event="click"
+            ></button
+            ><button
+              type="button"
+              id="monthnext"
+              aria-label="Следующий месяц"
+              data-action="nextFinanceMonth"
+              data-action-event="click"
+            >
+              ›</button
+            ><input type="hidden" id="month" />
+          </div>
+        </div>
+      </header>
+      <div id="updatebanner" class="update-banner" hidden role="status">
+        <div>
+          <b>Доступна новая версия</b
+          ><small id="updatestatus">Обновите приложение, когда завершите текущие действия.</small>
+        </div>
+        <button data-action="updateFinanceApp" data-action-event="click">Обновить</button>
+      </div>
+      <div id="storagebanner" class="update-banner" hidden role="status">
+        <div>
+          <b>Скриншоты пока не сохранены</b
+          ><small
+            >Операции добавлены. Не закрывайте страницу: повторите сохранение исходных
+            изображений.</small
+          >
+        </div>
+        <button data-action="retryImageArchives" data-action-event="click">
+          Повторить сохранение
+        </button>
+      </div>
+      <div
+        id="budget-storage-warning"
+        class="update-banner budget-storage-warning"
+        role="status"
+        hidden
+      >
+        <div>
+          Бюджет почти достиг предела хранения. Скачайте копию; скоро старые операции нужно будет
+          перенести в архив
+        </div>
+        <button type="button" data-action="openBackupSettings" data-action-event="click">
+          Скачать копию
+        </button>
+      </div>
+      <div id="content"></div>
+    </main>
+    <dialog id="adddialog" class="add-sheet" aria-labelledby="add-title">
+      <div class="sheet-heading">
+        <h2 id="add-title">Добавить операцию</h2>
+        <button
+          type="button"
+          data-action="closeAddChooser"
+          data-action-event="click"
+          aria-label="Закрыть"
+        >
+          <svg
+            class="ui-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <path d="m6 6 12 12M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+      <button
+        type="button"
+        class="add-option"
+        data-add-mode="manual"
+        data-action="chooseAdd"
+        data-action-event="click"
+      >
+        <span class="add-option-icon"
+          ><svg
+            class="ui-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="m15 4 5 5M4 20l1-5L17 3l4 4L9 19l-5 1Z" /></svg></span
+        ><span><b>Добавить вручную</b><small>Сумма, категория и счёт</small></span>
+      </button>
+      <button
+        type="button"
+        class="add-option"
+        data-add-mode="screenshot"
+        data-action="chooseAdd"
+        data-action-event="click"
+      >
+        <span class="add-option-icon"
+          ><svg
+            class="ui-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <rect x="3" y="3" width="18" height="18" rx="3" />
+            <circle cx="8" cy="8" r="1.5" />
+            <path d="m3 17 5-5 4 4 4-6 5 7" /></svg></span
+        ><span><b>Со скриншота</b><small>Распознать историю банка</small></span>
+      </button>
+    </dialog>
+    <dialog id="modal" class="mobile-sheet operation-sheet" aria-labelledby="formtitle">
+      <form id="form">
+        <h2 id="formtitle">Новая операция</h2>
+        <div class="operation-types" role="group" aria-label="Тип операции">
+          <button
+            type="button"
+            data-operation-type="expense"
+            data-action="chooseOperationType"
+            data-action-event="click"
+            aria-pressed="true"
+          >
+            Расход
+          </button>
+          <button
+            type="button"
+            data-operation-type="income"
+            data-action="chooseOperationType"
+            data-action-event="click"
+            aria-pressed="false"
+          >
+            Доход
+          </button>
+          <button
+            type="button"
+            data-operation-type="transfer"
+            data-action="chooseOperationType"
+            data-action-event="click"
+            aria-pressed="false"
+          >
+            Перевод
+          </button>
+          <button
+            type="button"
+            data-operation-type="refund"
+            data-action="chooseOperationType"
+            data-action-event="click"
+            aria-pressed="false"
+          >
+            Возврат
+          </button>
+        </div>
+        <select name="type" hidden aria-label="Тип операции">
+          <option value="expense">Расход</option>
+          <option value="income">Доход</option>
+          <option value="refund">Возврат покупки</option>
+          <option value="transfer">Между своими счетами</option>
+        </select>
+        <label class="operation-amount-label"
+          >Сумма, ₽<input
+            class="operation-amount-input"
+            name="amount"
+            type="text"
+            inputmode="decimal"
+            autocomplete="off"
+            maxlength="20"
+            required
+            autofocus
+            placeholder="0,00"
+        /></label>
+        <section id="operation-category-section">
+          <label>Категория<select name="category" hidden></select></label>
+          <div
+            id="operation-category-grid"
+            class="operation-category-grid"
+            role="group"
+            aria-label="Категория"
+          ></div>
+        </section>
+        <label
+          >Название<input
+            name="name"
+            required
+            maxlength="120"
+            placeholder="На что потратили или откуда поступление"
+        /></label>
+        <label
+          >Комментарий <span class="muted">необязательно</span
+          ><textarea name="note" maxlength="1000" rows="2"></textarea>
+        </label>
+        <div class="operation-date-chips" role="group" aria-label="Дата операции">
+          <button
+            type="button"
+            data-operation-date="today"
+            data-action="chooseOperationDate"
+            data-action-event="click"
+          >
+            Сегодня</button
+          ><button
+            type="button"
+            data-operation-date="yesterday"
+            data-action="chooseOperationDate"
+            data-action-event="click"
+          >
+            Вчера</button
+          ><button type="button" data-action="showOperationDate" data-action-event="click">
+            Выбрать дату
+          </button>
+        </div>
+        <label id="operation-date-field"
+          >Дата<input
+            name="date"
+            type="date"
+            required
+            data-action="updateOperationForm"
+            data-action-event="change"
+        /></label>
+        <details id="operation-extra">
+          <summary>Ещё · <span id="operation-account-summary"></span></summary>
+          <label
+            >Счёт<select
+              name="account"
+              data-action="updateOperationForm"
+              data-action-event="change"
+            ></select></label
+          ><label id="tolabel" hidden>На счёт<select name="to"></select></label
+          ><label>Время, если известно<input name="time" type="time" /></label>
+        </details>
+        <p id="operation-form-error" class="negative" role="alert"></p>
+        <div class="operation-form-actions">
+          <button class="primary" type="submit">Сохранить</button>
+          <div class="actions">
+            <button type="button" data-action="closeOperationDialog" data-action-event="click">
+              Отмена</button
+            ><button type="button" id="delete" hidden>Удалить</button>
+          </div>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="importeditor" class="mobile-sheet">
+      <form id="importeditform" data-action="submitImportEdit" data-action-event="submit"></form>
+    </dialog>
+    <dialog id="accounteditor">
+      <form id="accountform" data-action="submitAccountForm" data-action-event="submit"></form>
+    </dialog>
+    <dialog id="questiondialog"><form id="questionform"></form></dialog>
+    <dialog id="logoutdialog">
+      <h2>Выход из аккаунта</h2>
+      <p id="logoutmessage"></p>
+      <p id="logouterror" class="negative" role="alert"></p>
+      <div class="actions">
+        <button class="primary" data-action="logoutAfterSync" data-action-event="click">
+          Синхронизировать и выйти</button
+        ><button data-action="downloadLogoutBackup" data-action-event="click">Скачать копию</button
+        ><button class="negative" data-action="logoutWithoutSync" data-action-event="click">
+          Выйти без сохранения</button
+        ><button data-action="closeLogoutDialog" data-action-event="click">Отмена</button>
+      </div>
+    </dialog>
+    <dialog id="deleteaccountdialog">
+      <form data-action="submitAccountDelete" data-action-event="submit">
+        <h2 id="deleteaccounttitle"></h2>
+        <p id="deleteaccountmessage"></p>
+        <label
+          >Операции<select
+            id="deleteaccountmode"
+            data-action="changeAccountDeleteMode"
+            data-action-event="change"
+          ></select></label
+        ><label id="deleteaccounttargetlabel"
+          >Перенести на счёт<select id="deleteaccounttarget"></select
+        ></label>
+        <div class="actions">
+          <button class="primary">Продолжить</button
+          ><button type="button" data-action="closeAccountDeleteDialog" data-action-event="click">
+            Отмена
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="monthpickerdialog" aria-labelledby="monthpickertitle">
+      <form data-action="submitMonthPicker" data-action-event="submit">
+        <h2 id="monthpickertitle">Выберите месяц</h2>
+        <div class="month-picker-fields">
+          <label>Месяц<select id="pickermonth" required></select></label
+          ><label
+            >Год<input
+              id="pickeryear"
+              type="number"
+              min="1"
+              max="9999"
+              step="1"
+              inputmode="numeric"
+              required
+          /></label>
+        </div>
+        <p id="monthpickererror" class="negative" role="alert"></p>
+        <div class="actions">
+          <button class="primary">Применить</button
+          ><button type="button" data-action="closeMonthPicker" data-action-event="click">
+            Отмена
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="budgetlimitdialog" class="mobile-sheet" aria-labelledby="budgetlimittitle">
+      <form data-action="submitMonthlyLimit" data-action-event="submit">
+        <h2 id="budgetlimittitle"></h2>
+        <p id="budgetlimitmonth" class="muted"></p>
+        <label
+          >Лимит, ₽<input
+            id="budgetlimitamount"
+            type="text"
+            maxlength="20"
+            autocomplete="off"
+            min="0"
+            max="100000000000000"
+            step="0.01"
+            inputmode="decimal"
+            placeholder="Без лимита"
+        /></label>
+        <p class="muted">Пустое поле — без лимита. Ноль — план без расходов.</p>
+        <p id="budgetlimiterror" class="negative" role="alert"></p>
+        <div class="actions">
+          <button class="primary">Сохранить</button
+          ><button
+            type="button"
+            id="budgetlimitremove"
+            data-action="removeMonthlyLimit"
+            data-action-event="click"
+          >
+            Убрать лимит</button
+          ><button type="button" data-action="closeBudgetLimitDialog" data-action-event="click">
+            Отмена
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="backupdialog" aria-labelledby="backuptitle" aria-describedby="backupmessage">
+      <form id="backupform">
+        <h2 id="backuptitle"></h2>
+        <p id="backupmessage" role="status" aria-live="polite"></p>
+        <div class="actions">
+          <button id="backupconfirm" class="primary">Восстановить</button
+          ><button type="button" id="backupcancel">Отмена</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="screenshotpreview">
+      <div class="category-history-head">
+        <h2>Исходный скриншот</h2>
+        <button aria-label="Закрыть" data-action="closeScreenshotPreview" data-action-event="click">
+          <svg
+            class="ui-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            aria-hidden="true"
+          >
+            <path d="m5 5 14 14M19 5 5 19" />
+          </svg>
+        </button>
+      </div>
+      <div id="screenshotpreviewcontent"></div>
+    </dialog>
+    <dialog id="categoryhistory"><div id="categoryhistorycontent"></div></dialog>
+    <script type="module" src="app.js?v=31"></script>
+  </body>
+</html>

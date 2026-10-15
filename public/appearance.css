@@ -1,0 +1,427 @@
+html,
+body {
+  background: var(--bg);
+  color: var(--ink);
+}
+aside {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line);
+  box-shadow: none;
+}
+.brand span {
+  color: var(--accent);
+}
+.foot,
+.muted,
+small,
+.import-debug,
+.import-date,
+.import-item-main small,
+.import-save small,
+.bank-category-choice small,
+.category-history-head small,
+.category-history-stats span,
+.import-toolbar label,
+.category-tile-plan small,
+.category-budget-control small,
+.offline-choice small,
+.profile-files a,
+.category-history-stats,
+.budget-category.unplanned .budget-state {
+  color: var(--muted);
+}
+nav button {
+  color: var(--muted);
+}
+nav button:hover {
+  background: var(--raised);
+}
+nav .active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  box-shadow: none;
+}
+.card,
+.grid > .card:nth-child(2),
+.grid > .card:nth-child(3),
+.category-tile,
+.category-tile:nth-child(3n + 1),
+.category-tile:nth-child(3n + 2),
+.category-tile:nth-child(3n),
+.import-upload,
+.import-review,
+dialog,
+#importeditor {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line);
+  box-shadow: none;
+}
+button,
+.button-link,
+.month-control > button,
+.budget-heading > button,
+.budget-edit,
+.category-limit-button,
+.category-budget-control,
+.budget-unplanned,
+.profile-card .profile-status,
+.offline-choice,
+.bank-category-choice,
+.category-history-stats,
+.update-banner,
+.backup-status {
+  background: var(--raised);
+  color: var(--ink);
+  border-color: var(--line);
+}
+button.primary,
+.button-link.primary,
+.update-banner button {
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: none;
+}
+button.primary:hover {
+  box-shadow: none;
+}
+button:disabled {
+  opacity: 0.65;
+}
+.button-link:not(.primary),
+.category-link,
+.category-limit-button,
+.import-price,
+.import-kicker,
+.budget-heading > button {
+  color: var(--accent);
+}
+.screenshot-link,
+.category-link,
+.category-tile-main {
+  background: var(--color-33);
+}
+.category-link:hover,
+.category-tile-main:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.category-tile:hover {
+  box-shadow: none;
+}
+.hero.card {
+  background: var(--hero);
+  color: var(--hero-ink);
+  border-color: var(--hero);
+  box-shadow: none;
+}
+.hero:after {
+  content: none;
+}
+.hero small,
+.hero p,
+.hero .muted {
+  color: var(--hero-ink);
+}
+.positive,
+.import-price.positive,
+.import-ready,
+.budget-state {
+  color: var(--success);
+}
+.negative,
+.profile-error,
+#accounterror,
+.budget-category.over .budget-state,
+.category-budget-control.over span {
+  color: var(--danger);
+}
+.notice,
+.import-needs,
+.import-filter.active,
+.cloud-badge.warn,
+.budget-alert,
+.budget-category.near .budget-state {
+  background: var(--warning-soft);
+  color: var(--warning);
+  border-color: var(--warning);
+}
+.budget-alert.over,
+.budget-summary .budget-exceeded,
+.category-budget-control.over {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-color: var(--danger);
+}
+.cloud-badge.ok,
+.import-filter,
+.budget-summary .budget-remaining {
+  background: var(--success-soft);
+  color: var(--success);
+  border-color: var(--line);
+}
+.icon,
+.badge,
+.import-visual,
+.import-visual.purple {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.import-visual.mint {
+  background: var(--success-soft);
+  color: var(--success);
+}
+.import-visual.peach {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+.import-visual.blue {
+  background: var(--raised);
+  color: var(--accent);
+}
+.import-item-main,
+.import-list-heading b {
+  color: var(--ink);
+}
+.import-item-main:hover {
+  background: var(--raised);
+}
+.row,
+.import-item,
+.import-save,
+.budget-category,
+.import-thumbs img {
+  border-color: var(--line);
+}
+.import-save {
+  background: var(--surface);
+  box-shadow: none;
+}
+input,
+select,
+textarea,
+.import-toolbar select,
+.import-toolbar input,
+.month-picker-fields select,
+.month-picker-fields input {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line);
+  accent-color: var(--accent);
+}
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+.bar,
+.budget-category .bar {
+  background: var(--line);
+}
+.bar i,
+.budget-category .bar i,
+.chart div {
+  background: var(--accent);
+}
+.budget-category.near .bar i {
+  background: var(--warning);
+}
+.budget-category.over .bar i {
+  background: var(--danger);
+}
+.donut div {
+  background: var(--surface);
+}
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline-color: var(--focus);
+}
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-8);
+  min-height: 44px;
+}
+.theme-toggle svg {
+  flex-shrink: 0;
+}
+.theme-choices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gap-8);
+}
+.theme-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-12);
+  min-height: 104px;
+  padding: var(--gap-12) var(--gap-8);
+  border: 2px solid var(--line);
+}
+.theme-choice[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 650;
+}
+.theme-choice span {
+  font-size: var(--text-body);
+}
+#theme-save-status:empty {
+  display: none;
+}
+#theme-save-status {
+  color: var(--warning);
+  font-size: var(--text-small);
+}
+.month-control {
+  background: var(--raised);
+  border-color: var(--line);
+}
+.month-control > button:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.category-tile-plan {
+  border-color: var(--line);
+}
+.category-budget-control span {
+  color: var(--muted);
+}
+#importediterror,
+#monthpickererror,
+#budgetlimiterror {
+  color: var(--danger);
+}
+@media (max-width: 360px) {
+  .theme-choices {
+    grid-template-columns: 1fr;
+  }
+  .theme-choice {
+    min-height: 56px;
+    flex-direction: row;
+  }
+}
+/* Final shared controls and category palette, for both themes. */
+button,
+input,
+select,
+textarea,
+summary,
+.button-link {
+  min-height: 44px;
+}
+button,
+summary,
+.button-link {
+  min-width: 44px;
+}
+input,
+select,
+textarea {
+  font: var(--text-label) var(--font-family);
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  padding: var(--gap-12);
+}
+textarea {
+  width: 100%;
+  resize: vertical;
+}
+label,
+small,
+summary,
+.import-price,
+.import-name,
+.import-debug {
+  font-size: var(--text-small);
+}
+summary {
+  padding-block: var(--gap-12);
+  cursor: pointer;
+  color: var(--ink);
+}
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+a {
+  color: var(--accent);
+}
+.import-visual.mint,
+.category-symbol.mint {
+  color: var(--success);
+  background: var(--success-soft);
+}
+.import-visual.blue,
+.import-visual.purple,
+.category-symbol.blue,
+.category-symbol.purple {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.import-visual.amber,
+.import-visual.peach,
+.category-symbol.amber {
+  color: var(--warning);
+  background: var(--warning-soft);
+}
+.import-visual.rose,
+.category-symbol.rose {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+.import-visual.neutral,
+.category-symbol.neutral {
+  color: var(--muted);
+  background: var(--raised);
+}
+.import-debug {
+  color: var(--muted);
+}
+.import-upload .import-kicker,
+.import-kicker {
+  color: var(--accent);
+}
+.bank-category-choice {
+  min-height: 44px;
+}
+.profile-files a,
+.category-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+a[href] {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+input[type="checkbox"] {
+  min-width: 24px;
+  min-height: 24px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+}
