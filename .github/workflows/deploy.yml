@@ -51,16 +51,20 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Check secrets
+        id: check
         env:
           HOST: ${{ secrets.DEPLOY_HOST }}
           KEY: ${{ secrets.DEPLOY_SSH_KEY }}
         run: |
           if [ -z "$HOST" ] || [ -z "$KEY" ]; then
-            echo "::error::Не заданы секреты DEPLOY_HOST и DEPLOY_SSH_KEY"
-            exit 1
+            echo "::warning::Не заданы секреты DEPLOY_HOST и DEPLOY_SSH_KEY — развёртывание пропущено"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: SSH key
+        if: steps.check.outputs.ready == 'true'
         env:
           HOST: ${{ secrets.DEPLOY_HOST }}
           KEY: ${{ secrets.DEPLOY_SSH_KEY }}
@@ -85,6 +89,7 @@ jobs:
           EOF
 
       - name: Upload project
+        if: steps.check.outputs.ready == 'true'
         run: |
           ssh server 'command -v rsync >/dev/null || (apt-get update -q && apt-get install -yq rsync)'
           rsync -az --delete \
@@ -93,6 +98,7 @@ jobs:
             ./ server:/opt/finance/
 
       - name: Install and restart
+        if: steps.check.outputs.ready == 'true'
         env:
           DOMAIN: ${{ vars.DEPLOY_DOMAIN }}
           FULL: ${{ inputs.full_setup && '1' || '0' }}
