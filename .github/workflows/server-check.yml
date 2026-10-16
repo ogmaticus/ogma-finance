@@ -1,0 +1,66 @@
+name: Server check (load + security)
+# Ручная проверка: умеренная нагрузка (без писем и без авторизации) и аудит безопасности сервера.
+# Результаты — в аннотациях запуска (notice). Нагрузка короткая и щадящая, это не стресс-тест.
+on:
+  workflow_dispatch:
+    inputs:
+      connections:
+        description: "Одновременных соединений"
+        default: "50"
+      seconds:
+        description: "Длительность каждого теста, сек"
+        default: "20"
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Tools and SSH
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          sudo apt-get update -q && sudo apt-get install -yq wrk nmap >/dev/null
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/deploy_key; chmod 600 ~/.ssh/deploy_key
+          printf 'Host server\n  HostName %s\n  User root\n  IdentityFile ~/.ssh/deploy_key\n  StrictHostKeyChecking accept-new\n' "$HOST" > ~/.ssh/config
+          ssh server true
+      - name: Load
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          C: ${{ inputs.connections }}
+          D: ${{ inputs.seconds }}
+        run: |
+          note() { printf '%s' "$2" | head -c 3500 | python3 -c 'import sys;d=sys.stdin.read().replace("%","%25").replace("\r","").replace("\n","%0A");print("::notice title='"$1"'::"+d)'; }
+          B="http://$HOST"
+          note "ping" "$(ping -c 5 -q $HOST 2>&1 | tail -2)"
+          note "server-before" "$(ssh server 'uptime; free -m | head -2')"
+          run() {
+            local name="$1"; shift
+            ssh server "vmstat 2 $((D/2+1))" > vm.txt &
+            local out; out="$(wrk -t4 -c"$C" -d"${D}s" --latency "$@" 2>&1)"
+            wait
+            local cpu; cpu="$(awk 'NR>3 {idle+=$15; n++} END { if (n) printf "CPU сервера: средняя загрузка %.0f%%", 100-idle/n }' vm.txt)"
+            note "load-$name" "$(echo "$out" | grep -E 'Latency|Req/Sec|requests in|Requests/sec|Transfer/sec|50%|90%|99%|Non-2xx|Socket errors')
+          $cpu"
+          }
+          run healthz "$B/healthz"
+          run page-finance "$B/finance"
+          run static-js "$B/import-ui.js"
+          run api-session-db -H "Cookie: fin_session=0000000000000000000000000000000000000000000000000000000000000000" "$B/api/session"
+          note "server-after" "$(ssh server 'uptime; free -m | head -2; systemctl is-active finance; journalctl -u finance --since "-5min" -o cat | grep -c "\"status\":5" || true')"
+      - name: Security
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          note() { printf '%s' "$2" | head -c 3500 | python3 -c 'import sys;d=sys.stdin.read().replace("%","%25").replace("\r","").replace("\n","%0A");print("::notice title='"$1"'::"+d)'; }
+          note "nmap-open-ports" "$(sudo nmap -Pn -sS --top-ports 2000 -T4 $HOST 2>&1 | grep -E '^[0-9]+/|Not shown|done')"
+          note "http-headers" "$(curl -sS -I -m 10 http://$HOST/finance 2>&1 | grep -viE '^(date|content-length):')"
+          note "ssh-config" "$(ssh server 'sshd -T 2>/dev/null | grep -E "^(passwordauthentication|permitrootlogin|kbdinteractiveauthentication|pubkeyauthentication|maxauthtries|x11forwarding) "; echo "authorized_keys (комментарии):"; awk "{print \$NF}" /root/.ssh/authorized_keys; ls /home 2>/dev/null; awk -F: "\$7 ~ /(bash|sh)\$/ {print \"shell-user:\", \$1}" /etc/passwd')"
+          note "listening" "$(ssh server 'ss -tlnpH | awk "{print \$4, \$6}" | sed -E "s/users:\(\(\"([^\"]+)\".*/\1/"')"
+          note "firewall" "$(ssh server 'ufw status verbose | head -20')"
+          note "updates" "$(ssh server 'systemctl is-enabled unattended-upgrades; systemctl is-active unattended-upgrades; apt list --upgradable 2>/dev/null | grep -c upgradable; apt list --upgradable 2>/dev/null | grep -ci security; [ -f /var/run/reboot-required ] && echo "нужна перезагрузка" || echo "перезагрузка не нужна"; uname -r')"
+          note "ssh-attacks-24h" "$(ssh server 'journalctl -u ssh --since "-24h" -o cat | grep -cE "Invalid user|Failed|Connection closed by authenticating" ; journalctl -u ssh --since "-24h" -o cat | grep -E "Invalid user" | awk "{print \$3}" | sort | uniq -c | sort -rn | head -5')"
+          note "secrets-perms" "$(ssh server 'ls -l /etc/finance; stat -c "%A %U:%G %n" /var/lib/finance /var/lib/finance/files /var/backups/finance /opt/finance')"
+          note "service-hardening" "$(ssh server 'systemd-analyze security finance.service 2>/dev/null | tail -1; systemd-analyze security caddy.service 2>/dev/null | tail -1')"
+          note "postgres" "$(ssh server 'grep -E "^(listen_addresses|password_encryption)" /etc/postgresql/16/main/postgresql.conf || echo "listen_addresses по умолчанию (localhost)"; grep -vE "^\s*(#|$)" /etc/postgresql/16/main/pg_hba.conf')"
+          note "backup" "$(ssh server 'systemctl list-timers finance-backup.timer --no-pager | head -2; ls -la /var/backups/finance | tail -3; test -f /etc/finance/backup.env && echo "внешний бэкап настроен" || echo "внешний бэкап НЕ настроен"')"
