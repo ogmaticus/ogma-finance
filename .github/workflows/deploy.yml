@@ -1,4 +1,4 @@
-name: Deploy to Selectel
+name: Deploy to server
 
 # Секреты репозитория (Settings → Secrets and variables → Actions):
 #   DEPLOY_HOST        — IP сервера
