@@ -123,16 +123,7 @@ ufw --force enable
 dpkg-reconfigure -f noninteractive unattended-upgrades
 
 echo "==> SSH только по ключам"
-if grep -q "^ssh-" /root/.ssh/authorized_keys 2>/dev/null; then
-  cat > /etc/ssh/sshd_config.d/90-finance.conf <<'SSH'
-PasswordAuthentication no
-KbdInteractiveAuthentication no
-PermitRootLogin prohibit-password
-SSH
-  systemctl reload ssh || systemctl reload sshd || true
-else
-  echo "В /root/.ssh/authorized_keys нет ключей — вход по паролю НЕ отключён."
-fi
+bash "$APP_DIR/deploy/harden-ssh.sh"
 
 echo "==> Проверка"
 for i in 1 2 3 4 5; do

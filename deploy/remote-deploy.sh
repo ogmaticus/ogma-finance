@@ -55,6 +55,8 @@ else
   systemctl restart finance
 fi
 
+bash "$APP_DIR/deploy/harden-ssh.sh"
+
 # Образ хостинга открывает порт панели ispmanager — она не используется.
 ufw delete allow ispmanager >/dev/null 2>&1 || true
 
