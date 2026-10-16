@@ -216,7 +216,7 @@ export function createApp({ config, pool, files, mailer, budget, log = () => {} 
     } catch (error) {
       if (error instanceof AuthError) response = jsonResponse({ error: error.message, code: error.code }, error.status);
       else {
-        log({ level: "error", msg: "request failed", path: new URL(request.url).pathname, name: error?.name, code: error?.code });
+        log({ level: "error", msg: "request failed", path: new URL(request.url).pathname, name: error?.name, code: error?.code, detail: String(error?.message || "").replace(/[\w.+-]+@[\w.-]+/g, "***@***").slice(0, 300) });
         response = jsonResponse({ error: "Сервис временно недоступен. Попробуйте позже." }, 503);
       }
     }
