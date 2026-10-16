@@ -1,0 +1,28 @@
+name: Diagnose server
+# Ручная проверка состояния сервера. Результаты — в аннотациях запуска (notice).
+on:
+  workflow_dispatch:
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: SSH key
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/deploy_key; chmod 600 ~/.ssh/deploy_key
+          printf 'Host server\n  HostName %s\n  User root\n  IdentityFile ~/.ssh/deploy_key\n  StrictHostKeyChecking accept-new\n' "$HOST" > ~/.ssh/config
+      - name: Checks
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          note() { printf '%s' "$2" | head -c 3000 | python3 -c 'import sys;d=sys.stdin.read().replace("%","%25").replace("\r","").replace("\n","%0A");print("::notice title='"$1"'::"+d)'; }
+          note "external-http" "$(curl -sS -m 10 -o /dev/null -w 'HTTP %{http_code} %{redirect_url}' http://$HOST/finance 2>&1)"
+          note "external-healthz" "$(curl -sS -m 10 http://$HOST/healthz 2>&1)"
+          note "services" "$(ssh server 'for s in finance caddy postgresql finance-backup.timer; do echo "$s: $(systemctl is-active $s)"; done; ufw status | head -8' 2>&1)"
+          note "local" "$(ssh server 'curl -sS -m 5 http://127.0.0.1:3000/healthz; echo; curl -sS -m 5 -o /dev/null -w "caddy:80 %{http_code}" http://127.0.0.1/finance' 2>&1)"
+          note "finance-log" "$(ssh server 'journalctl -u finance -n 25 --no-pager -o cat' 2>&1)"
+          note "caddy-log" "$(ssh server 'journalctl -u caddy -n 15 --no-pager -o cat; cat /etc/caddy/Caddyfile' 2>&1)"
+          note "versions" "$(ssh server 'lsb_release -ds; node --version; psql --version; caddy version; age --version; df -h / | tail -1; free -m | head -2' 2>&1)"
