@@ -1,7 +1,14 @@
 [Unit]
-Description=Finance database backup
+Description=Finance backup (database dump, restore check, encrypted off-site copy)
+OnFailure=finance-alert@%n.service
 
 [Service]
 Type=oneshot
-User=postgres
 ExecStart=/usr/local/bin/finance-backup
+Nice=10
+IOSchedulingClass=idle
+PrivateTmp=true
+NoNewPrivileges=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/backups/finance

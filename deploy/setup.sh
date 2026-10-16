@@ -20,7 +20,7 @@ echo "==> Пакеты системы"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -q
 apt-get upgrade -yq
-apt-get install -yq ca-certificates curl gnupg ufw postgresql caddy unattended-upgrades openssl
+apt-get install -yq ca-certificates curl gnupg ufw postgresql caddy unattended-upgrades openssl age
 
 echo "==> Node.js 22"
 if ! command -v node >/dev/null || [[ "$(node -p 'process.versions.node.split(".")[0]')" -lt 22 ]]; then
@@ -67,8 +67,8 @@ PUBLIC_ORIGIN=${ORIGIN}
 HOST=127.0.0.1
 PORT=3000
 TRUST_PROXY=1
-# Почта: console — код пишется в журнал сервера (только для тестов!).
-# Для запуска: MAIL_TRANSPORT=smtp и параметры SMTP ниже.
+# Почта: console — письма НЕ отправляются (в журнал пишутся только адрес и тема, без кода),
+# поэтому войти в приложение нельзя. Для входа: MAIL_TRANSPORT=smtp и параметры SMTP ниже.
 MAIL_TRANSPORT=console
 MAIL_FROM=no-reply@example.ru
 MAIL_FROM_NAME=Финансы
@@ -77,6 +77,8 @@ MAIL_FROM_NAME=Финансы
 #SMTP_SECURE=true
 #SMTP_USER=
 #SMTP_PASSWORD=
+# Куда слать оповещения о сбоях (бэкап, служба приложения).
+#ALERT_EMAIL=
 ENV
   chown root:finance "$ENV_FILE"
   chmod 640 "$ENV_FILE"
@@ -105,6 +107,11 @@ echo "==> Резервные копии базы (ежедневно, 14 дне�
 install -m 755 "$APP_DIR/deploy/finance-backup.sh" /usr/local/bin/finance-backup
 install -m 644 "$APP_DIR/deploy/finance-backup.service" /etc/systemd/system/finance-backup.service
 install -m 644 "$APP_DIR/deploy/finance-backup.timer" /etc/systemd/system/finance-backup.timer
+install -m 644 "$APP_DIR/deploy/finance-alert@.service" /etc/systemd/system/finance-alert@.service
+install -m 755 "$APP_DIR/deploy/finance-restore.sh" /usr/local/bin/finance-restore
+if [[ ! -f /etc/finance/backup.env ]]; then
+  install -m 600 -o root -g root "$APP_DIR/deploy/backup.env.example" /etc/finance/backup.env.example
+fi
 systemctl daemon-reload
 systemctl enable --now finance-backup.timer
 

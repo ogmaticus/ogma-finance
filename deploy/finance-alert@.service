@@ -1,0 +1,10 @@
+[Unit]
+Description=Finance alert: %i failed
+
+[Service]
+Type=oneshot
+User=finance
+SupplementaryGroups=systemd-journal
+EnvironmentFile=/etc/finance/finance.env
+WorkingDirectory=/opt/finance
+ExecStart=/usr/bin/node backend/alert.mjs "Сбой службы %i на сервере «Финансов»"

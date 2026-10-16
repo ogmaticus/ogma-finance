@@ -12,7 +12,13 @@ chmod -R go-w "$APP_DIR"
 if [[ ! -f /etc/finance/finance.env || "${FULL_SETUP:-0}" == "1" ]]; then
   bash "$APP_DIR/deploy/setup.sh" $DOMAIN
 else
+  command -v age >/dev/null || apt-get install -yq age
   install -m 644 "$APP_DIR/deploy/finance.service" /etc/systemd/system/finance.service
+  install -m 755 "$APP_DIR/deploy/finance-backup.sh" /usr/local/bin/finance-backup
+  install -m 755 "$APP_DIR/deploy/finance-restore.sh" /usr/local/bin/finance-restore
+  install -m 644 "$APP_DIR/deploy/finance-backup.service" /etc/systemd/system/finance-backup.service
+  install -m 644 "$APP_DIR/deploy/finance-backup.timer" /etc/systemd/system/finance-backup.timer
+  install -m 644 "$APP_DIR/deploy/finance-alert@.service" /etc/systemd/system/finance-alert@.service
   systemctl daemon-reload
   systemctl restart finance
 fi

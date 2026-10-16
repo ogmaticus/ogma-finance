@@ -1,4 +1,5 @@
 [Unit]
+OnFailure=finance-alert@%n.service
 Description=Finance app (server v2)
 After=network-online.target postgresql.service
 Wants=network-online.target postgresql.service
