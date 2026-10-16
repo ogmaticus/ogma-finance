@@ -4,6 +4,8 @@ name: Deploy to server
 #   DEPLOY_HOST        — IP сервера
 #   DEPLOY_SSH_KEY     — закрытый ключ, которым GitHub входит на сервер (публичная часть — в /root/.ssh/authorized_keys)
 #   DEPLOY_KNOWN_HOSTS — необязательно: строка из `ssh-keyscan <IP>`; без неё ключ сервера принимается при первом входе
+#   SMTP_USER, SMTP_PASSWORD — необязательно: почта для кодов входа (Яндекс: адрес и пароль приложения)
+#   ALERT_EMAIL        — необязательно: куда слать оповещения о сбоях (по умолчанию SMTP_USER)
 # Переменная репозитория (необязательно): DEPLOY_DOMAIN — домен для HTTPS.
 
 on:
@@ -96,6 +98,34 @@ jobs:
             --exclude .git --exclude .github --exclude node_modules \
             --exclude /data --exclude /e2e --exclude /test-results --exclude /playwright-report \
             ./ server:/opt/finance/
+
+      - name: Upload settings
+        if: steps.check.outputs.ready == 'true'
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
+          SMTP_HOST: ${{ vars.SMTP_HOST }}
+        run: |
+          umask 077
+          : > settings
+          if [ -n "$SMTP_USER" ] && [ -n "$SMTP_PASSWORD" ]; then
+            {
+              echo "MAIL_TRANSPORT=smtp"
+              echo "SMTP_HOST=${SMTP_HOST:-smtp.yandex.ru}"
+              echo "SMTP_PORT=465"
+              echo "SMTP_SECURE=true"
+              echo "SMTP_USER=$SMTP_USER"
+              echo "SMTP_PASSWORD=$SMTP_PASSWORD"
+              echo "MAIL_FROM=$SMTP_USER"
+              echo "ALERT_EMAIL=${ALERT_EMAIL:-$SMTP_USER}"
+            } >> settings
+          fi
+          if [ -s settings ]; then
+            ssh server 'umask 077; mkdir -p /etc/finance; cat > /etc/finance/settings.incoming' < settings
+            echo "Почта будет настроена из секретов"
+          fi
+          rm -f settings
 
       - name: Install and restart
         if: steps.check.outputs.ready == 'true'
