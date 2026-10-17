@@ -22,3 +22,18 @@ jobs:
           rc=0; ssh server 'systemctl start finance-backup.service' || rc=$?
           note "result" "exit=$rc; $(ssh server 'systemctl show -p Result -p ExecMainStatus finance-backup.service | tr "\n" " "; echo; journalctl -u finance-backup.service --since "-10min" -o cat | tail -25')"
           exit $rc
+      - name: Policy check (server key must not read, list or delete)
+        run: |
+          note() { printf '%s' "$2" | head -c 3500 | python3 -c 'import sys;d=sys.stdin.read().replace("%","%25").replace("\r","").replace("\n","%0A");print("::notice title='"$1"'::"+d)'; }
+          out="$(ssh server 'bash -s' <<'SH'
+          set -a; . /etc/finance/backup.env; set +a
+          B="https://$S3_BUCKET.${S3_ENDPOINT#*://}"
+          req() { curl -s -o /dev/null -w "%{http_code}" --aws-sigv4 "aws:amz:$S3_REGION:s3" --user "$S3_ACCESS_KEY:$S3_SECRET_KEY" -H "x-amz-content-sha256: UNSIGNED-PAYLOAD" "$@"; }
+          echo "LIST   $(req "$B/?list-type=2")"
+          echo "GET    $(req "$B/finance/does-not-exist.tar.age")"
+          echo "DELETE $(req -X DELETE "$B/finance/policy-check-nonexistent")"
+          SH
+          )"
+          note "policy-check" "Ожидается 403 везде.
+          $out"
+          echo "$out" | grep -vq ' 403$' && { echo "::error::Политика пропускает лишнее"; exit 1; } || true
