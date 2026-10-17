@@ -1,0 +1,19 @@
+name: Mail check
+# Проверяет вход на SMTP-сервер с настройками сервера (EHLO/AUTH/QUIT, письмо не отправляется).
+on:
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: SMTP login
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/deploy_key; chmod 600 ~/.ssh/deploy_key
+          printf 'Host server\n  HostName %s\n  User root\n  IdentityFile ~/.ssh/deploy_key\n  StrictHostKeyChecking accept-new\n' "$HOST" > ~/.ssh/config
+          out="$(ssh server 'cd /opt/finance && timeout 20 node --env-file=/etc/finance/finance.env backend/smtp-check.mjs' 2>&1)"; rc=$?
+          printf '%s' "$out" | head -c 3000 | python3 -c 'import sys;d=sys.stdin.read().replace("%","%25").replace("\r","").replace("\n","%0A");print("::notice title=smtp-check::"+d)'
+          exit $rc
