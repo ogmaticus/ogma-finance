@@ -1,4 +1,5 @@
 // Email one-time-code login, sessions, consent log and rate limits.
+import { loginCodeEmail } from "./mail-templates.mjs";
 import crypto from "node:crypto";
 
 export const CONSENT_VERSION = "2026-10-15";
@@ -63,19 +64,13 @@ export class Auth {
        ON CONFLICT (email) DO UPDATE SET code_hash = EXCLUDED.code_hash, expires_at = EXCLUDED.expires_at, attempts = 0, created_at = now()`,
       [email, this.hmac("code:" + email + ":" + code), CODE_TTL_MINUTES],
     );
-    await this.mailer.send({
-      to: email,
-      subject: `Код входа в «Финансы»: ${code}`,
-      text:
-        `Ваш код для входа: ${code}\n\n` +
-        `Код действует ${CODE_TTL_MINUTES} минут. Если вы не запрашивали вход, просто проигнорируйте это письмо.\n\n` +
-        `— Финансы`,
-    });
+    await this.mailer.send({ to: email, ...loginCodeEmail({ code, ttlMinutes: CODE_TTL_MINUTES }) });
     return { email };
   }
-  async verifyCode({ email: rawEmail, code, consent }, { ip, userAgent }) {
+  async verifyCode({ email: rawEmail, code: rawCode, consent }, { ip, userAgent }) {
+    const code = String(rawCode ?? "").replace(/\s+/g, "");
     const email = normalizeEmail(rawEmail);
-    if (!/^\d{6}$/.test(String(code ?? "").trim())) throw new AuthError(400, "Введите 6 цифр из письма", "invalid_code");
+    if (!/^\d{6}$/.test(code)) throw new AuthError(400, "Введите 6 цифр из письма", "invalid_code");
     const { rows } = await this.pool.query(
       `UPDATE login_codes SET attempts = attempts + 1 WHERE email = $1 AND expires_at > now() RETURNING code_hash, attempts`,
       [email],
@@ -87,7 +82,7 @@ export class Auth {
       throw new AuthError(429, "Слишком много попыток. Запросите новый код.", "too_many_attempts");
     }
     const expected = Buffer.from(row.code_hash, "hex"),
-      actual = Buffer.from(this.hmac("code:" + email + ":" + String(code).trim()), "hex");
+      actual = Buffer.from(this.hmac("code:" + email + ":" + code), "hex");
     if (!crypto.timingSafeEqual(expected, actual)) throw new AuthError(400, "Неверный код", "invalid_code");
 
     let user = (await this.pool.query("SELECT id, email, display_name FROM users WHERE email = $1", [email])).rows[0];

@@ -1,8 +1,8 @@
-import { screenshotSourceId, legacyScreenshotSourceId } from "./screenshot-source.js?v=32";
-import { state } from "./state.js?v=32";
-import { renderProfile, cloudFetch, persistBudget } from "./sync.js?v=32";
-import { liveRecords } from "./sync-core.js?v=32";
-import { backupFile } from "./backup-ui.js?v=32";
+import { screenshotSourceId, legacyScreenshotSourceId } from "./screenshot-source.js?v=33";
+import { state } from "./state.js?v=33";
+import { renderProfile, cloudFetch, persistBudget } from "./sync.js?v=33";
+import { liveRecords } from "./sync-core.js?v=33";
+import { backupFile } from "./backup-ui.js?v=33";
 export function openVault() {
   if (state.vaultConnection) return Promise.resolve(state.vaultConnection);
   return new Promise((resolve, reject) => {

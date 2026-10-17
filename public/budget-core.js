@@ -1,4 +1,4 @@
-import { FinanceData } from "./data-model.js?v=32";
+import { FinanceData } from "./data-model.js?v=33";
 export const FinanceBudget = (() => {
   const own = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
   const forbidden = (key) => ["__proto__", "constructor", "prototype"].includes(key);

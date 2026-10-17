@@ -144,6 +144,7 @@ jobs:
               echo "SMTP_USER=$SMTP_USER"
               echo "SMTP_PASSWORD=$SMTP_PASSWORD"
               echo "MAIL_FROM=$SMTP_USER"
+              echo "MAIL_FROM_NAME=Мультикнопка"
               echo "ALERT_EMAIL=${ALERT_EMAIL:-$SMTP_USER}"
             } >> settings
           fi

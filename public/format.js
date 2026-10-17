@@ -1,4 +1,4 @@
-import { Money } from "./money.js?v=32";
+import { Money } from "./money.js?v=33";
 export const $ = (s) => document.querySelector(s),
   money = Money.format,
   esc = (s) =>

@@ -1,9 +1,9 @@
-import { state } from "./state.js?v=32";
-import { FinanceBudget } from "./budget-core.js?v=32";
-import { $ } from "./format.js?v=32";
-import { render } from "./app.js?v=32";
-import { renderCategoryHistory } from "./category-history.js?v=32";
-import { animateDialogClose } from "./ui.js?v=32";
+import { state } from "./state.js?v=33";
+import { FinanceBudget } from "./budget-core.js?v=33";
+import { $ } from "./format.js?v=33";
+import { render } from "./app.js?v=33";
+import { renderCategoryHistory } from "./category-history.js?v=33";
+import { animateDialogClose } from "./ui.js?v=33";
 export const financeMonthNames = [
   "Январь",
   "Февраль",

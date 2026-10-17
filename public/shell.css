@@ -38,6 +38,13 @@ main {
   padding: var(--gap-24) var(--gap-32);
   max-width: 1400px;
 }
+/* Широкие мониторы: контент по центру свободной области, а не прижат к меню. */
+@media (min-width: 1500px) {
+  main {
+    max-width: none;
+    padding-inline: max(var(--gap-32), calc((100% - var(--sidebar-width) - 1440px) / 2));
+  }
+}
 .app-header {
   display: flex;
   align-items: center;

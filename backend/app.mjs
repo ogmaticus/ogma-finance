@@ -123,6 +123,8 @@ export function createApp({ config, pool, files, mailer, budget, log = () => {} 
         user: ctx.user ? { id: ctx.user.userId, name: ctx.user.displayName, email: ctx.user.email } : null,
         signInUrl: "/login?return_to=%2Ffinance",
         signOutUrl: "/logout?return_to=%2Ffinance",
+        // Приложение открывается только после входа: без сессии клиент уходит на страницу входа.
+        signInRequired: true,
         consentVersion: CONSENT_VERSION,
       });
     if (p === "/api/auth/request-code" && method === "POST") {
@@ -166,7 +168,7 @@ export function createApp({ config, pool, files, mailer, budget, log = () => {} 
     if (p.startsWith("/api/")) return jsonResponse({ error: "Не найдено" }, 404);
 
     if (method !== "GET" && method !== "HEAD") return new Response("Method Not Allowed", { status: 405 });
-    if (p === "/") return Response.redirect(origin + "/finance", 302);
+    if (p === "/") return Response.redirect(origin + (ctx.user ? "/finance" : "/login?return_to=%2Ffinance"), 302);
     if (p === "/app.html") return Response.redirect(origin + "/finance", 301);
     if (p === "/finance") return staticFile(path.join(PUBLIC_DIR, "app.html"), { csp: true });
     if (p === "/login") {

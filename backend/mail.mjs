@@ -8,20 +8,40 @@ import path from "node:path";
 const b64 = (s) => Buffer.from(s, "utf8").toString("base64");
 const encodeHeader = (s) => (/^[\x20-\x7e]*$/.test(s) ? s : `=?UTF-8?B?${b64(s)}?=`);
 
-export function buildMessage({ from, fromName, to, subject, text }) {
+const wrap76 = (s) => s.replace(/.{1,76}/g, "$&\r\n");
+
+export function buildMessage({ from, fromName, to, subject, text, html }) {
   const domain = from.split("@")[1] || "localhost";
-  const body = b64(text).replace(/.{1,76}/g, "$&\r\n");
-  return [
+  const head = [
     `From: ${fromName ? `${encodeHeader(fromName)} <${from}>` : from}`,
     `To: ${to}`,
     `Subject: ${encodeHeader(subject)}`,
     `Date: ${new Date().toUTCString()}`,
     `Message-ID: <${crypto.randomUUID()}@${domain}>`,
+    "Auto-Submitted: auto-generated",
     "MIME-Version: 1.0",
+  ];
+  if (!html)
+    return [...head, "Content-Type: text/plain; charset=utf-8", "Content-Transfer-Encoding: base64", "", wrap76(b64(text))].join(
+      "\r\n",
+    );
+  const boundary = "mk-" + crypto.randomUUID();
+  return [
+    ...head,
+    `Content-Type: multipart/alternative; boundary="${boundary}"`,
+    "",
+    `--${boundary}`,
     "Content-Type: text/plain; charset=utf-8",
     "Content-Transfer-Encoding: base64",
     "",
-    body,
+    wrap76(b64(text)),
+    `--${boundary}`,
+    "Content-Type: text/html; charset=utf-8",
+    "Content-Transfer-Encoding: base64",
+    "",
+    wrap76(b64(html)),
+    `--${boundary}--`,
+    "",
   ].join("\r\n");
 }
 
@@ -67,7 +87,7 @@ class SmtpSession {
 export function createMailer(config, log = console.log) {
   const transport = config.MAIL_TRANSPORT || "console";
   const from = config.MAIL_FROM || "no-reply@localhost";
-  const fromName = config.MAIL_FROM_NAME || "Финансы";
+  const fromName = config.MAIL_FROM_NAME || "Мультикнопка";
   if (transport === "console")
     return {
       async send(m) {
@@ -99,7 +119,7 @@ export function createMailer(config, log = console.log) {
       const s = new SmtpSession(socket);
       try {
         await s.cmd(null, [220]);
-        let ehlo = await s.cmd("EHLO finance.local", [250]);
+        let ehlo = await s.cmd("EHLO multiknopka.ru", [250]);
         if (!secure && ehlo.some((l) => /STARTTLS/i.test(l)) && config.SMTP_STARTTLS !== "false") {
           await s.cmd("STARTTLS", [220]);
           const upgraded = tls.connect({ socket, servername: host });
@@ -108,7 +128,7 @@ export function createMailer(config, log = console.log) {
             upgraded.once("error", reject);
           });
           s.attach(upgraded);
-          ehlo = await s.cmd("EHLO finance.local", [250]);
+          ehlo = await s.cmd("EHLO multiknopka.ru", [250]);
         }
         if (config.SMTP_USER)
           await s.cmd("AUTH PLAIN " + b64(`\0${config.SMTP_USER}\0${config.SMTP_PASSWORD || ""}`), [235]);

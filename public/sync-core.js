@@ -1,6 +1,6 @@
-import { BudgetSchema } from "./budget-schema.js?v=32";
-import { state } from "./state.js?v=32";
-import { FinanceData } from "./data-model.js?v=32";
+import { BudgetSchema } from "./budget-schema.js?v=33";
+import { state } from "./state.js?v=33";
+import { FinanceData } from "./data-model.js?v=33";
 export const budgetStorageKey = "finance-prototype-v1";
 export function liveRecords(type) {
   return FinanceData.live(state.db[type]);

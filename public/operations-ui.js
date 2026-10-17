@@ -1,8 +1,8 @@
-import { state } from "./state.js?v=32";
-import { $, esc, money } from "./format.js?v=32";
-import { FinanceData } from "./data-model.js?v=32";
-import { operationDateOrder, localDate } from "./dates.js?v=32";
-import { icon, categoryVisual } from "./icons.js?v=32";
+import { state } from "./state.js?v=33";
+import { $, esc, money } from "./format.js?v=33";
+import { FinanceData } from "./data-model.js?v=33";
+import { operationDateOrder, localDate } from "./dates.js?v=33";
+import { icon, categoryVisual } from "./icons.js?v=33";
 
 export function filterOperations(ops, filters = {}) {
   const query = (filters.query || "").normalize("NFKC").toLocaleLowerCase("ru-RU").trim();

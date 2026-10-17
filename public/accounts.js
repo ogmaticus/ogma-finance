@@ -1,10 +1,10 @@
-import { Money } from "./money.js?v=32";
-import { state } from "./state.js?v=32";
-import { liveRecords } from "./sync-core.js?v=32";
-import { $, esc } from "./format.js?v=32";
-import { accountLast4, prepareImportDraft } from "./import-ui.js?v=32";
-import { save, render } from "./app.js?v=32";
-import { animateDialogClose } from "./ui.js?v=32";
+import { Money } from "./money.js?v=33";
+import { state } from "./state.js?v=33";
+import { liveRecords } from "./sync-core.js?v=33";
+import { $, esc } from "./format.js?v=33";
+import { accountLast4, prepareImportDraft } from "./import-ui.js?v=33";
+import { save, render } from "./app.js?v=33";
+import { animateDialogClose } from "./ui.js?v=33";
 export function account(id) {
   state.accountEditing = id || null;
   const a = liveRecords("accounts").find((x) => x.id === id),

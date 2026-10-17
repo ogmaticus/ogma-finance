@@ -1,9 +1,9 @@
-import { preserveLegacyBudget } from "./migration-copy.js?v=32";
-import { icon } from "./icons.js?v=32";
-import { APP_VERSION } from "./release-info.js?v=32";
-import { themeControls } from "./appearance.js?v=32";
-import { BudgetSchema } from "./budget-schema.js?v=32";
-import { state } from "./state.js?v=32";
+import { preserveLegacyBudget } from "./migration-copy.js?v=33";
+import { icon } from "./icons.js?v=33";
+import { APP_VERSION } from "./release-info.js?v=33";
+import { themeControls } from "./appearance.js?v=33";
+import { BudgetSchema } from "./budget-schema.js?v=33";
+import { state } from "./state.js?v=33";
 import {
   parseBudget,
   rememberBudgetBaseline,
@@ -13,27 +13,27 @@ import {
   emptyPersonalBudget,
   isBudget,
   mergeBudgets,
-} from "./sync-core.js?v=32";
-import { FinanceData } from "./data-model.js?v=32";
-import { $, esc } from "./format.js?v=32";
+} from "./sync-core.js?v=33";
+import { FinanceData } from "./data-model.js?v=33";
+import { $, esc } from "./format.js?v=33";
 import {
   purgeOwnerLocalData,
   openLogoutDialog,
   deleteScreenshot,
   deleteAllMyData,
   deleteWholeAccount,
-} from "./privacy-ui.js?v=32";
+} from "./privacy-ui.js?v=33";
 import {
   uploadQueuedScreenshots,
   claimGuestArchivesForMigration,
   cloudScreenshotsEnabled,
   setCloudScreenshots,
-} from "./file-vault.js?v=32";
-import { offlineAccess, forgetOfflineAccess, pwaCardHtml } from "./pwa.js?v=32";
-import { go, render, seed } from "./app.js?v=32";
-import { showNotice, askConfirm } from "./ui.js?v=32";
-import { FinanceBackup } from "./backup-core.js?v=32";
-import { backupControls } from "./backup-ui.js?v=32";
+} from "./file-vault.js?v=33";
+import { offlineAccess, forgetOfflineAccess, pwaCardHtml } from "./pwa.js?v=33";
+import { go, render, seed } from "./app.js?v=33";
+import { showNotice, askConfirm } from "./ui.js?v=33";
+import { FinanceBackup } from "./backup-core.js?v=33";
+import { backupControls } from "./backup-ui.js?v=33";
 export const baseCategories = [
   "Продукты",
   "Транспорт",
@@ -200,6 +200,14 @@ export async function acceptRemoteReset(remote) {
   state.cloudError = "Данные аккаунта были удалены на другом устройстве. Локальная копия очищена.";
   cloudCache();
 }
+// Без входа приложение не показываем: сервер сообщает signInRequired, и мы уходим на страницу входа.
+// Офлайн (сессию проверить нельзя) работает прежний режим с сохранённым доступом.
+function requireSignIn() {
+  if (!state.cloudSession?.signInRequired || state.cloudSession.user) return false;
+  const url = state.cloudSession.signInUrl || "/login?return_to=%2Ffinance";
+  if (typeof location !== "undefined" && typeof location.replace === "function") location.replace(url);
+  return true;
+}
 export async function initializeCloud() {
   const main = document.querySelector("main");
   if (main) main.inert = true;
@@ -209,6 +217,7 @@ export async function initializeCloud() {
     const access = offlineAccess();
     if (access && access.user.id !== state.cloudSession.user?.id) forgetOfflineAccess();
     if (!state.cloudSession.user) {
+      if (requireSignIn()) return;
       state.cloudState = "guest";
       return;
     }
@@ -585,6 +594,7 @@ export async function reconnectCloud() {
       state.cloudFiles = [];
       forgetOfflineAccess();
       if (session.user) await initializeCloud();
+      else if (requireSignIn()) return;
       else {
         hydrateBudget(parseBudget(localStorage.getItem(budgetStorageKey) || structuredClone(seed)));
         state.cloudState = "guest";

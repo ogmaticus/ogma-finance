@@ -1,13 +1,13 @@
-import { icon } from "./icons.js?v=32";
-import { state } from "./state.js?v=32";
-import { liveRecords } from "./sync-core.js?v=32";
-import { budgetMonth, limit } from "./budget-ui.js?v=32";
-import { FinanceBudget } from "./budget-core.js?v=32";
-import { importVisual } from "./import-ui.js?v=32";
-import { esc, money, $ } from "./format.js?v=32";
-import { financeMonthTitle, shiftHistoryMonth, openMonthPicker } from "./month-picker.js?v=32";
-import { opRows, edit } from "./app.js?v=32";
-import { animateDialogClose } from "./ui.js?v=32";
+import { icon } from "./icons.js?v=33";
+import { state } from "./state.js?v=33";
+import { liveRecords } from "./sync-core.js?v=33";
+import { budgetMonth, limit } from "./budget-ui.js?v=33";
+import { FinanceBudget } from "./budget-core.js?v=33";
+import { importVisual } from "./import-ui.js?v=33";
+import { esc, money, $ } from "./format.js?v=33";
+import { financeMonthTitle, shiftHistoryMonth, openMonthPicker } from "./month-picker.js?v=33";
+import { opRows, edit } from "./app.js?v=33";
+import { animateDialogClose } from "./ui.js?v=33";
 export function historyCategories() {
   return [...new Set([...state.cats, ...liveRecords("ops").map((o) => o.category)])];
 }

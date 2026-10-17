@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Вход · Финансы</title>
+    <title>Вход · Мультикнопка</title>
     <link rel="icon" type="image/svg+xml" href="/brand.svg" />
     <link rel="stylesheet" href="/design-tokens.css" />
     <link rel="stylesheet" href="/auth/auth.css" />
@@ -12,7 +12,7 @@
   </head>
   <body>
     <main class="auth-card">
-      <div class="brand"><img src="/brand.svg" alt="" />Финансы</div>
+      <div class="brand"><img src="/brand.svg" alt="" />Мультикнопка</div>
 
       <form id="emailstep" novalidate>
         <h1>Вход и регистрация</h1>
@@ -31,7 +31,7 @@
         <h1>Введите код</h1>
         <p>Отправили 6 цифр на <b id="sentto"></b>. Код действует 10 минут.</p>
         <label for="code">Код из письма</label>
-        <input id="code" class="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required />
+        <input id="code" class="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="7" required />
         <button id="verify" type="submit">Войти</button>
         <button id="back" class="secondary" type="button">Изменить почту</button>
         <p class="error" id="codeerror" role="alert"></p>

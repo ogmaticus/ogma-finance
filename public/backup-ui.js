@@ -1,6 +1,6 @@
-import { screenshotSourceId, legacyScreenshotSourceId } from "./screenshot-source.js?v=32";
-import { state } from "./state.js?v=32";
-import { animateDialogClose, askConfirm } from "./ui.js?v=32";
+import { screenshotSourceId, legacyScreenshotSourceId } from "./screenshot-source.js?v=33";
+import { state } from "./state.js?v=33";
+import { animateDialogClose, askConfirm } from "./ui.js?v=33";
 import {
   syncBudget,
   cloudFetch,
@@ -11,14 +11,14 @@ import {
   exportBudget,
   restoreBudgetFile,
   refreshProfile,
-} from "./sync.js?v=32";
-import { vaultAll, vaultWriteBatch, cloudScreenshotsEnabled } from "./file-vault.js?v=32";
-import { FinanceBackup } from "./backup-core.js?v=32";
-import { FinanceZip } from "./backup-zip.js?v=32";
-import { FinanceData } from "./data-model.js?v=32";
-import { budgetStorageKey } from "./sync-core.js?v=32";
-import { forgetOfflineAccess } from "./pwa.js?v=32";
-import { render } from "./app.js?v=32";
+} from "./sync.js?v=33";
+import { vaultAll, vaultWriteBatch, cloudScreenshotsEnabled } from "./file-vault.js?v=33";
+import { FinanceBackup } from "./backup-core.js?v=33";
+import { FinanceZip } from "./backup-zip.js?v=33";
+import { FinanceData } from "./data-model.js?v=33";
+import { budgetStorageKey } from "./sync-core.js?v=33";
+import { forgetOfflineAccess } from "./pwa.js?v=33";
+import { render } from "./app.js?v=33";
 export function backupOwner() {
   return state.cloudSession?.user?.id || "guest";
 }

@@ -1,13 +1,13 @@
-import { state } from "./state.js?v=32";
+import { state } from "./state.js?v=33";
 import {
   vaultDeleteOwned,
   vaultAll,
   retryScreenshotArchives,
   uploadQueuedScreenshots,
   cloudScreenshotsEnabled,
-} from "./file-vault.js?v=32";
-import { cacheBudgetKey, emptyPersonalBudget, budgetStorageKey } from "./sync-core.js?v=32";
-import { offlineAccess, forgetOfflineAccess } from "./pwa.js?v=32";
+} from "./file-vault.js?v=33";
+import { cacheBudgetKey, emptyPersonalBudget, budgetStorageKey } from "./sync-core.js?v=33";
+import { offlineAccess, forgetOfflineAccess } from "./pwa.js?v=33";
 import {
   syncBudget,
   renderProfile,
@@ -15,11 +15,11 @@ import {
   cloudFetch,
   cloudCache,
   refreshProfile,
-} from "./sync.js?v=32";
-import { $ } from "./format.js?v=32";
-import { render } from "./app.js?v=32";
-import { animateDialogClose, askConfirm, showNotice, askForm } from "./ui.js?v=32";
-import { exportFullBackup } from "./backup-ui.js?v=32";
+} from "./sync.js?v=33";
+import { $ } from "./format.js?v=33";
+import { render } from "./app.js?v=33";
+import { animateDialogClose, askConfirm, showNotice, askForm } from "./ui.js?v=33";
+import { exportFullBackup } from "./backup-ui.js?v=33";
 export function privacyOwner() {
   return state.cloudSession?.user?.id || "guest";
 }

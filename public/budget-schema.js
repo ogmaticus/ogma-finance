@@ -1,4 +1,4 @@
-import { FinanceData } from "./data-model.js?v=32";
+import { FinanceData } from "./data-model.js?v=33";
 export const BUDGET_MAX_BYTES = 1900000;
 export const BUDGET_SIZE_MESSAGE =
   "Бюджет превышает предел хранения 1 900 000 байт. Скачайте копию и уменьшите бюджет перед сохранением.";
