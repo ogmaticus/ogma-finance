@@ -158,6 +158,8 @@ export function createApp({ config, pool, files, mailer, budget, log = () => {} 
       if (!erase.ok) return erase;
       await pool.query("DELETE FROM owner_data_state WHERE owner = $1", [ctx.user.userId]);
       await auth.deleteUser(ctx.user.userId);
+      // Журнал уничтожения ПДн (приказ РКН № 179): дата и обезличенный идентификатор аккаунта.
+      log({ level: "info", msg: "account deleted", user: ctx.user.userId });
       return jsonResponse({ deleted: true }, 200, { "Set-Cookie": sessionCookie("", 0) });
     }
     if (p === "/api/budget") return budget.handleBudget(request, identity, env);
