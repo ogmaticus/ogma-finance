@@ -1,0 +1,44 @@
+name: Uptime monitor
+# Каждые 10 минут проверяет снаружи приложение, лендинг и сертификаты.
+# При смене состояния (сбой / восстановлено) шлёт письмо на ALERT_EMAIL.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: uptime
+  cancel-in-progress: false
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            backend/mail.mjs
+            scripts/uptime-check.mjs
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Restore previous state
+        uses: actions/cache/restore@v4
+        with:
+          path: uptime-state.json
+          key: uptime-state-${{ github.run_id }}
+          restore-keys: uptime-state-
+      - name: Check
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
+          SMTP_HOST: ${{ vars.SMTP_HOST }}
+        run: node scripts/uptime-check.mjs uptime-state.json
+      - name: Save state
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: uptime-state.json
+          key: uptime-state-${{ github.run_id }}
