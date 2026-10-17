@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Мультикнопка — ролик 01</title>
+<style>
+@font-face{font-family:Rubik;src:url('fonts/Rubik-cyrillic-variable.woff2') format('woff2');font-weight:300 900;unicode-range:U+0400-045F,U+2116}
+@font-face{font-family:Rubik;src:url('fonts/Rubik-latin-variable.woff2') format('woff2');font-weight:300 900;unicode-range:U+0000-00FF,U+2000-206F,U+20A0-20C0}
+@font-face{font-family:Plex;src:url('fonts/IBMPlexSans-Regular.woff2') format('woff2');font-weight:400}
+@font-face{font-family:Plex;src:url('fonts/IBMPlexSans-Medium.woff2') format('woff2');font-weight:500}
+/* 1080x1920, тёмный бренд-фон, крупная типографика сверху, объект в центре, титры снизу */
+:root{--bg:#121020;--bg2:#17152b;--card:#1f1b36;--line:rgba(197,185,241,.16);--text:#f7f6fb;--muted:#aaa5bf;--purple:#6c4ce0;--lav:#b9a4ff;--mint:#7be0b9;--amber:#ffc56b;--red:#ff7a8a;--h:Rubik,Arial,sans-serif;--b:Plex,Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg)}
+body{font-family:var(--b);color:var(--text);-webkit-font-smoothing:antialiased}
+#stage{position:absolute;inset:0;overflow:hidden;background:radial-gradient(1200px 900px at 50% 42%,#2a1f5c 0%,#17152b 45%,#0e0c19 100%)}
+#dots{position:absolute;inset:-60px;background-image:radial-gradient(rgba(197,185,241,.12) 2px,transparent 2px);background-size:54px 54px}
+#glow{position:absolute;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(108,76,224,.55),rgba(108,76,224,0) 65%);left:90px;top:520px;filter:blur(10px)}
+.scene{position:absolute;inset:0;opacity:0}
+.h{position:absolute;left:90px;right:90px;top:250px;font-family:var(--h);font-weight:500;font-size:92px;line-height:1.06;letter-spacing:-.05em}
+.h .accent{color:var(--lav)}
+.eyebrow{position:absolute;left:90px;top:170px;font:500 30px/1 var(--b);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;gap:18px;align-items:center}
+.eyebrow i{width:14px;height:14px;border-radius:50%;background:var(--mint);box-shadow:0 0 18px var(--mint)}
+.line{display:block;white-space:nowrap;will-change:transform,opacity}
+/* карточки хаоса */
+.chaos{position:absolute;width:520px;padding:34px 36px;border-radius:34px;background:var(--card);border:2px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.45)}
+.chaos h4{font:500 36px/1.2 var(--h);letter-spacing:-.03em;margin-bottom:22px;display:flex;justify-content:space-between;align-items:center}
+.chaos h4 b{font:500 24px/1 var(--b);background:rgba(255,122,138,.16);color:var(--red);padding:10px 16px;border-radius:99px}
+.chaos .bar{height:18px;border-radius:9px;background:rgba(197,185,241,.14);margin-top:16px}
+.cell{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.cell span{height:40px;border-radius:8px;background:rgba(197,185,241,.1)}
+/* кнопка */
+.btn{position:absolute;left:50%;top:50%;width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:110px;background:linear-gradient(150deg,#9b80ff 0%,#6c4ce0 48%,#4a2fb8 100%);box-shadow:0 50px 120px rgba(76,46,190,.6),inset 0 6px 0 rgba(255,255,255,.28),inset 0 -14px 0 rgba(30,10,90,.35);display:grid;place-items:center}
+.btn .g{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.btn .g span{width:92px;height:92px;border-radius:26px;background:rgba(255,255,255,.92);box-shadow:0 8px 20px rgba(30,10,90,.35)}
+.btn .g span:last-child{background:rgba(255,255,255,.45)}
+.ring{position:absolute;left:50%;top:50%;border-radius:50%;border:3px solid rgba(185,164,255,.6);transform:translate(-50%,-50%)}
+.word{position:absolute;left:0;right:0;top:1140px;text-align:center;font:500 120px/1 var(--h);letter-spacing:-.06em}
+.word span{color:var(--lav)}
+.tag{position:absolute;left:0;right:0;top:1275px;text-align:center;font:400 40px/1.3 var(--b);color:var(--muted)}
+/* телефон и операции */
+.phone{position:absolute;left:110px;top:560px;width:400px;height:730px;border-radius:64px;background:#0b0a14;border:3px solid rgba(197,185,241,.25);padding:26px;box-shadow:0 40px 100px rgba(0,0,0,.5);overflow:hidden}
+.shot{position:absolute;inset:26px;border-radius:42px;background:#f3f2f8;overflow:hidden;padding:46px 30px}
+.shot .t{height:26px;width:60%;border-radius:8px;background:#d7d4e4;margin-bottom:40px}
+.shot .r{display:flex;align-items:center;gap:18px;margin-bottom:34px}
+.shot .r i{width:56px;height:56px;border-radius:50%;background:#d7d4e4;flex:none}
+.shot .r p{flex:1;height:18px;border-radius:6px;background:#dedbea}
+.shot .r b{width:90px;height:18px;border-radius:6px;background:#cfcbe0}
+.scan{position:absolute;left:0;right:0;height:130px;background:linear-gradient(180deg,rgba(108,76,224,0),rgba(108,76,224,.35) 70%,rgba(185,164,255,.95) 100%)}
+.ops{position:absolute;left:560px;right:70px;top:600px;display:grid;gap:22px}
+.op{display:flex;align-items:center;gap:20px;padding:24px 26px;border-radius:30px;background:var(--card);border:2px solid var(--line);box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.op i{width:62px;height:62px;border-radius:20px;flex:none;display:grid;place-items:center;font:500 30px/1 var(--h)}
+.op div{flex:1;min-width:0}
+.op strong{display:block;font:500 32px/1.15 var(--b)}
+.op small{font:400 22px/1.2 var(--b);color:var(--muted)}
+.op b{font:500 32px/1 var(--h);letter-spacing:-.03em;white-space:nowrap}
+.op b.plus{color:var(--mint)}
+.arrow{position:absolute;left:510px;top:930px;font:500 70px/1 var(--h);color:var(--lav)}
+/* бюджет */
+.bal{position:absolute;left:90px;right:90px;top:540px;padding:50px 56px;border-radius:48px;background:var(--card);border:2px solid var(--line)}
+.bal small{font:500 30px/1 var(--b);color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.bal .num{font:500 150px/1.1 var(--h);letter-spacing:-.06em;margin-top:18px;font-variant-numeric:tabular-nums}
+.lim{position:absolute;left:90px;right:90px;top:980px;display:grid;gap:40px}
+.lim .row{display:grid;grid-template-columns:1fr auto;gap:16px 20px;font:500 38px/1 var(--b)}
+.lim .row em{font-style:normal;color:var(--muted);font-variant-numeric:tabular-nums}
+.lim .track{grid-column:1/-1;height:30px;border-radius:15px;background:rgba(197,185,241,.12);overflow:hidden}
+.lim .fill{height:100%;border-radius:15px;background:linear-gradient(90deg,#6c4ce0,#b9a4ff)}
+.lim .fill.warn{background:linear-gradient(90deg,#e0a24c,#ffc56b)}
+/* модули */
+.mod{position:absolute;padding:28px 36px;border-radius:32px;background:var(--card);border:2px solid var(--line);box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.mod strong{display:block;font:500 46px/1.1 var(--h);letter-spacing:-.03em}
+.mod span{display:inline-flex;align-items:center;gap:10px;margin-top:12px;font:500 26px/1 var(--b);color:var(--muted)}
+.mod span.live{color:var(--mint)}
+.mod span.live:before{content:"";width:12px;height:12px;border-radius:50%;background:var(--mint);box-shadow:0 0 12px var(--mint)}
+.free{position:absolute;left:0;right:0;top:1250px;text-align:center;font:500 64px/1.15 var(--h);letter-spacing:-.04em}
+.free span{color:var(--mint)}
+/* финал */
+.url{position:absolute;left:50%;top:1160px;transform:translateX(-50%);padding:30px 56px;border-radius:99px;background:var(--text);color:#17152b;font:500 54px/1 var(--h);letter-spacing:-.04em;white-space:nowrap}
+.ru{position:absolute;left:0;right:0;top:1290px;text-align:center;font:400 30px/1.3 var(--b);color:var(--muted)}
+.ogma{position:absolute;left:0;right:0;bottom:300px;text-align:center;font:500 34px/1 var(--h);letter-spacing:-.05em;color:#c8bfd5}
+/* титры */
+#sub{position:absolute;left:70px;right:70px;bottom:400px;text-align:center;font:500 50px/1.25 var(--b);text-shadow:0 4px 24px rgba(0,0,0,.8)}
+#sub .w{color:rgba(247,246,251,.45)}
+#sub .w.on{color:#fff}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="dots"></div>
+  <div id="glow"></div>
+
+  <!-- 1. Хаос -->
+  <section class="scene" id="s1">
+    <div class="h"><span class="line">Деньги — в заметках.</span><span class="line">Бизнес — в таблицах.</span><span class="line accent">Склад — в голове?</span></div>
+    <div class="chaos" id="c1" style="left:80px;top:800px"><h4>Заметки <b>3 дня</b></h4><div class="bar" style="width:90%"></div><div class="bar" style="width:70%"></div><div class="bar" style="width:82%"></div></div>
+    <div class="chaos" id="c2" style="left:480px;top:960px"><h4>Таблица.xlsx <b>v7</b></h4><div class="cell"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
+    <div class="chaos" id="c3" style="left:140px;top:1150px"><h4>Остатки <b>?</b></h4><div class="bar" style="width:60%"></div><div class="bar" style="width:85%"></div></div>
+  </section>
+
+  <!-- 2. Хватит -->
+  <section class="scene" id="s2">
+    <div class="h"><span class="line">Хватит прыгать</span><span class="line">между</span><span class="line accent">приложениями.</span></div>
+  </section>
+
+  <!-- кнопка общая для 2–3 и 6–7 -->
+  <div id="btnwrap" style="position:absolute;inset:0;opacity:0">
+    <div class="ring" id="r1"></div><div class="ring" id="r2"></div>
+    <div class="btn" id="btn"><div class="g"><span></span><span></span><span></span><span></span></div></div>
+  </div>
+
+  <!-- 3. Бренд -->
+  <section class="scene" id="s3">
+    <div class="word" id="word">мультикнопка<span>.</span></div>
+    <div class="tag" id="tag">одна кнопка для денег, бизнеса и склада</div>
+  </section>
+
+  <!-- 4. Скриншот -> операции -->
+  <section class="scene" id="s4">
+    <div class="eyebrow"><i></i>распознавание на устройстве</div>
+    <div class="h"><span class="line">Скриншот —</span><span class="line accent">операции сами.</span></div>
+    <div class="phone" id="phone"><div class="shot"><div class="t"></div>
+      <div class="r"><i></i><p></p><b></b></div><div class="r"><i></i><p></p><b></b></div><div class="r"><i></i><p></p><b></b></div><div class="r"><i></i><p></p><b></b></div><div class="r"><i></i><p></p><b></b></div><div class="r"><i></i><p></p><b></b></div>
+      <div class="scan" id="scan"></div></div></div>
+    <div class="arrow" id="arrow">→</div>
+    <div class="ops">
+      <div class="op"><i style="background:rgba(108,76,224,.25);color:var(--lav)">П</i><div><strong>Продукты</strong><small>Еда</small></div><b>−1 240 ₽</b></div>
+      <div class="op"><i style="background:rgba(123,224,185,.18);color:var(--mint)">З</i><div><strong>Зарплата</strong><small>Доход</small></div><b class="plus">+80 000 ₽</b></div>
+      <div class="op"><i style="background:rgba(255,197,107,.18);color:var(--amber)">К</i><div><strong>Кофе</strong><small>Кафе</small></div><b>−250 ₽</b></div>
+      <div class="op"><i style="background:rgba(120,170,255,.18);color:#8fb6ff">Т</i><div><strong>Метро</strong><small>Транспорт</small></div><b>−100 ₽</b></div>
+    </div>
+  </section>
+
+  <!-- 5. Бюджет -->
+  <section class="scene" id="s5">
+    <div class="h" style="top:230px"><span class="line">Бюджет и аналитика</span><span class="line accent">перед глазами.</span></div>
+    <div class="bal" id="bal"><small>Остаток на октябрь</small><div class="num" id="num">0 ₽</div></div>
+    <div class="lim">
+      <div class="row"><span>Еда</span><em id="p1">0%</em><div class="track"><div class="fill" id="f1"></div></div></div>
+      <div class="row"><span>Транспорт</span><em id="p2">0%</em><div class="track"><div class="fill" id="f2"></div></div></div>
+      <div class="row"><span>Кафе</span><em id="p3">0%</em><div class="track"><div class="fill warn" id="f3"></div></div></div>
+    </div>
+  </section>
+
+  <!-- 6. Модули -->
+  <section class="scene" id="s6">
+    <div class="mod" id="m1" style="left:90px;top:330px"><strong>Финансы</strong><span class="live">работает</span></div>
+    <div class="mod" id="m2" style="right:90px;top:560px"><strong>Бизнес</strong><span>скоро</span></div>
+    <div class="mod" id="m3" style="left:120px;top:1010px"><strong>Склад</strong><span>в разработке</span></div>
+    <div class="free" id="free">Личные финансы — <span>бесплатно</span></div>
+  </section>
+
+  <!-- 7. Финал -->
+  <section class="scene" id="s7">
+    <div class="h" style="top:220px;text-align:center"><span class="line">Меньше рутины.</span><span class="line accent">Больше контроля.</span></div>
+    <div class="url" id="url">multiknopka.ru</div>
+    <div class="ru" id="ru">Данные хранятся в России</div>
+    <div class="ogma">ogma</div>
+  </section>
+
+  <div id="sub"></div>
+</div>
+
+<script>
+const SC=[[0,4.2],[4.2,7],[7,11],[11,16.5],[16.5,20.5],[20.5,24.8],[24.8,28.5]];
+const SUBS=[
+ "Деньги — в заметках. Бизнес — в таблицах. Склад — в голове?",
+ "Хватит прыгать между приложениями.",
+ "Мультикнопка. Одна кнопка — для денег, бизнеса и склада.",
+ "Загрузите скриншот из банка — операции распознаются прямо на телефоне.",
+ "Бюджеты и аналитика за месяц — сразу перед глазами.",
+ "Личные финансы — бесплатно. Бизнес и склад — уже на подходе.",
+ "Мультикнопка. Меньше рутины — больше контроля."];
+window.DURATION=28.5;
+const $=id=>document.getElementById(id);
+const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const lin=(t,a,b)=>cl((t-a)/(b-a));
+const eo=x=>1-Math.pow(1-x,3);
+const eb=x=>{const c=1.70158,d=c+1;return 1+d*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const eio=x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+function alpha(t,a,b,f=.35){return Math.min(lin(t,a,a+f),1-lin(t,b-f,b))}
+function lines(sel,t,start,step=.18){document.querySelectorAll(sel+' .line').forEach((el,i)=>{const p=eo(lin(t,start+i*step,start+i*step+.5));el.style.opacity=p;el.style.transform=`translateY(${(1-p)*60}px)`})}
+const fmt=n=>Math.round(n).toLocaleString('ru-RU').replace(/ /g,' ')+' ₽';
+function sub(t){
+  let i=SC.findIndex(([a,b])=>t>=a&&t<b);if(i<0)i=SC.length-1;
+  const [a,b]=SC[i];const words=SUBS[i].split(' ');
+  const p=lin(t,a+.15,b-.35);const k=Math.ceil(p*words.length);
+  $('sub').innerHTML=words.map((w,j)=>`<span class="w${j<k?' on':''}">${w}</span>`).join(' ');
+  $('sub').style.opacity=alpha(t,a,b,.2);
+}
+function render(t){
+  $('dots').style.transform=`translate(${(t*9)%54}px,${(t*14)%54}px)`;
+  $('glow').style.transform=`translate(${Math.sin(t*.6)*80}px,${Math.cos(t*.45)*60}px) scale(${1+Math.sin(t*.9)*.08})`;
+  SC.forEach(([a,b],i)=>$('s'+(i+1)).style.opacity=alpha(t,a,b));
+  // 1
+  lines('#s1',t,.1,.55);
+  [['c1',-6,.6],['c2',5,.9],['c3',-3,1.2]].forEach(([id,r,d])=>{const p=eb(lin(t,d,d+.6));const el=$(id);
+    el.style.opacity=lin(t,d,d+.2);el.style.transform=`translate(${Math.sin(t*3+d)*10}px,${(1-p)*120+Math.cos(t*2.4+d)*8}px) rotate(${r+Math.sin(t*2+d)*2}deg)`});
+  // 2: карточки сжимаются в кнопку
+  lines('#s2',t,4.25,.15);
+  const bIn=eb(lin(t,4.7,5.5)), bOut=lin(t,24.8,24.81);
+  let bw=0,bs=.0,by=0;
+  if(t>=4.6&&t<11){bw=1;bs=bIn*.78;by=180}
+  if(t>=7&&t<11){const p=eio(lin(t,7,7.6));bs=.78+p*.12;by=180-p*180+(-40)}
+  if(t>=11&&t<20.5)bw=0;
+  if(t>=20.5){bw=1;const p=eb(lin(t,20.6,21.2));bs=p*.62;by=0}
+  if(t>=24.8){const p=eio(lin(t,24.8,25.5));bs=.62-p*.12;by=-p*140}
+  const fade=t<11?Math.min(lin(t,4.6,4.8),1-lin(t,10.6,11)):(t>=20.5?lin(t,20.5,20.8):0);
+  // нажатие кнопки
+  const press=t>7.55&&t<8.05?Math.sin(lin(t,7.55,8.05)*Math.PI)*.08:0;
+  $('btnwrap').style.opacity=bw*fade;
+  $('btn').style.transform=`translateY(${by}px) scale(${bs-press}) rotate(${Math.sin(t*1.2)*2}deg)`;
+  [['r1',7.8],['r2',8.1]].forEach(([id,d])=>{const p=lin(t,d,d+1.2);const r=$(id);const s=420+p*700;r.style.width=r.style.height=s+'px';r.style.marginTop=(by-40)+'px';r.style.opacity=(t>d&&t<11)?(1-p)*.8:0});
+  // 3
+  {const p=eo(lin(t,7.7,8.4));$('word').style.opacity=p;$('word').style.transform=`translateY(${(1-p)*50}px)`;$('word').style.letterSpacing=(-.02-.04*p)+'em';
+   const q=eo(lin(t,8.3,8.9));$('tag').style.opacity=q;$('tag').style.transform=`translateY(${(1-q)*30}px)`}
+  // 4
+  lines('#s4',t,11.05,.2);
+  {const p=eb(lin(t,11.2,11.9));$('phone').style.transform=`translateY(${(1-p)*300}px) rotate(${-4+p*2}deg)`;
+   const s=lin(t,12,14.2);$('scan').style.top=(-130+s*900)+'px';$('scan').style.opacity=t<14.3?1:0;
+   $('arrow').style.opacity=lin(t,13,13.3);$('arrow').style.transform=`translateX(${Math.sin(t*6)*8}px)`;
+   document.querySelectorAll('#s4 .op').forEach((el,i)=>{const d=12.6+i*.45;const q=eb(lin(t,d,d+.5));el.style.opacity=lin(t,d,d+.2);el.style.transform=`translateX(${(1-q)*260}px) scale(${.9+q*.1})`})}
+  // 5
+  lines('#s5',t,16.55,.2);
+  {const p=eo(lin(t,16.8,17.5));$('bal').style.opacity=p;$('bal').style.transform=`translateY(${(1-p)*80}px)`;
+   const n=eio(lin(t,17,18.8));$('num').textContent=fmt(n*46820);
+   [[62,'f1','p1',17.6],[35,'f2','p2',17.9],[91,'f3','p3',18.2]].forEach(([v,f,pp,d])=>{const q=eio(lin(t,d,d+1.2));$(f).style.width=(q*v)+'%';$(pp).textContent=Math.round(q*v)+'%'})}
+  // 6
+  [['m1',20.9,-1],['m2',21.2,1],['m3',21.5,-1]].forEach(([id,d,s])=>{const q=eb(lin(t,d,d+.55));const el=$(id);el.style.opacity=lin(t,d,d+.2);el.style.transform=`translate(${s*(1-q)*200+Math.sin(t*1.5+d)*10}px,${Math.cos(t*1.3+d)*12}px) scale(${.85+q*.15})`});
+  {const q=eo(lin(t,22.4,23));$('free').style.opacity=q;$('free').style.transform=`translateY(${(1-q)*40}px)`}
+  // 7
+  lines('#s7',t,25.1,.3);
+  {const q=eb(lin(t,25.9,26.5));$('url').style.opacity=lin(t,25.9,26.1);$('url').style.transform=`translateX(-50%) scale(${.8+q*.2})`;$('ru').style.opacity=lin(t,26.4,26.8)}
+  sub(t);
+}
+window.render=render;
+const q=new URLSearchParams(location.search);
+if(!q.has('render')){let s=performance.now();(function loop(){render(((performance.now()-s)/1000)%window.DURATION);requestAnimationFrame(loop)})()}
+</script>
+</body>
+</html>
