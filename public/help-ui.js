@@ -1,5 +1,5 @@
-import { esc } from "./format.js?v=33";
-import { icon } from "./icons.js?v=33";
+import { esc } from "./format.js?v=34";
+import { icon } from "./icons.js?v=34";
 
 // Справка: быстрый старт, что есть что и частые вопросы. Тексты — простым языком,
 // названия разделов и кнопок совпадают с интерфейсом.

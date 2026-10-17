@@ -1363,3 +1363,130 @@ main {
   background: var(--warning-soft);
   color: var(--warning);
 }
+
+/* Бренд в боковой панели */
+.brand .brand-dot {
+  color: var(--accent);
+}
+/* «Ещё»: нечётный последний пункт — на всю ширину */
+.more-grid > :last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+/* Справка */
+.help-layout {
+  display: grid;
+  gap: var(--gap-24);
+  max-width: 760px;
+}
+.help-layout h2 {
+  font-size: var(--text-heading);
+  margin-bottom: var(--gap-12);
+}
+.help-start ol {
+  list-style: none;
+  display: grid;
+  gap: var(--gap-8);
+  padding: 0;
+  margin: 0;
+}
+.help-step {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-16);
+  padding: var(--gap-16);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+}
+.help-step > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+.help-step b,
+.help-step small {
+  display: block;
+}
+.help-step small {
+  color: var(--muted);
+  font-size: var(--text-small);
+  margin-top: var(--gap-4);
+}
+.help-step-number {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: var(--radius-round);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+}
+.help-step button {
+  flex: none;
+}
+.help-sections dl {
+  display: grid;
+  gap: var(--gap-12);
+  margin: 0;
+}
+.help-term {
+  display: grid;
+  grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+  gap: var(--gap-16);
+  padding-bottom: var(--gap-12);
+  border-bottom: 1px solid var(--line);
+}
+.help-term dt {
+  font-weight: 650;
+}
+.help-term dd {
+  margin: 0;
+  color: var(--muted);
+}
+.help-group {
+  display: grid;
+  gap: var(--gap-8);
+}
+.help-item {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+}
+.help-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-12);
+  padding: var(--gap-16);
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+}
+.help-item summary::-webkit-details-marker {
+  display: none;
+}
+.help-item summary .ui-icon {
+  flex: none;
+  transition: transform 0.2s;
+}
+.help-item[open] summary .ui-icon {
+  transform: rotate(90deg);
+}
+.help-item p {
+  padding: 0 var(--gap-16) var(--gap-16);
+  color: var(--muted);
+  margin: 0;
+}
+@media (max-width: 599px) {
+  .help-term {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--gap-4);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .help-item summary .ui-icon {
+    transition: none;
+  }
+}

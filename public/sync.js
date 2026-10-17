@@ -1,9 +1,9 @@
-import { preserveLegacyBudget } from "./migration-copy.js?v=33";
-import { icon } from "./icons.js?v=33";
-import { APP_VERSION } from "./release-info.js?v=33";
-import { themeControls } from "./appearance.js?v=33";
-import { BudgetSchema } from "./budget-schema.js?v=33";
-import { state } from "./state.js?v=33";
+import { preserveLegacyBudget } from "./migration-copy.js?v=34";
+import { icon } from "./icons.js?v=34";
+import { APP_VERSION } from "./release-info.js?v=34";
+import { themeControls } from "./appearance.js?v=34";
+import { BudgetSchema } from "./budget-schema.js?v=34";
+import { state } from "./state.js?v=34";
 import {
   parseBudget,
   rememberBudgetBaseline,
@@ -13,27 +13,27 @@ import {
   emptyPersonalBudget,
   isBudget,
   mergeBudgets,
-} from "./sync-core.js?v=33";
-import { FinanceData } from "./data-model.js?v=33";
-import { $, esc } from "./format.js?v=33";
+} from "./sync-core.js?v=34";
+import { FinanceData } from "./data-model.js?v=34";
+import { $, esc } from "./format.js?v=34";
 import {
   purgeOwnerLocalData,
   openLogoutDialog,
   deleteScreenshot,
   deleteAllMyData,
   deleteWholeAccount,
-} from "./privacy-ui.js?v=33";
+} from "./privacy-ui.js?v=34";
 import {
   uploadQueuedScreenshots,
   claimGuestArchivesForMigration,
   cloudScreenshotsEnabled,
   setCloudScreenshots,
-} from "./file-vault.js?v=33";
-import { offlineAccess, forgetOfflineAccess, pwaCardHtml } from "./pwa.js?v=33";
-import { go, render, seed } from "./app.js?v=33";
-import { showNotice, askConfirm } from "./ui.js?v=33";
-import { FinanceBackup } from "./backup-core.js?v=33";
-import { backupControls } from "./backup-ui.js?v=33";
+} from "./file-vault.js?v=34";
+import { offlineAccess, forgetOfflineAccess, pwaCardHtml } from "./pwa.js?v=34";
+import { go, render, seed } from "./app.js?v=34";
+import { showNotice, askConfirm } from "./ui.js?v=34";
+import { FinanceBackup } from "./backup-core.js?v=34";
+import { backupControls } from "./backup-ui.js?v=34";
 export const baseCategories = [
   "Продукты",
   "Транспорт",

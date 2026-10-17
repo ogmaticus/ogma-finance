@@ -1,7 +1,7 @@
-import { state } from "./state.js?v=33";
-import { cloudCache, renderProfile, reconnectCloud } from "./sync.js?v=33";
-import { esc } from "./format.js?v=33";
-import { budgetStorageKey } from "./sync-core.js?v=33";
+import { state } from "./state.js?v=34";
+import { cloudCache, renderProfile, reconnectCloud } from "./sync.js?v=34";
+import { esc } from "./format.js?v=34";
+import { budgetStorageKey } from "./sync-core.js?v=34";
 export function offlineAccess() {
   try {
     const value = JSON.parse(localStorage.getItem("finance-offline-access") || "null");

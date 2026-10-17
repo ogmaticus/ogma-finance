@@ -17,16 +17,16 @@ const BRAND = {
 const esc = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
-// Логотип — четыре квадрата из ячеек таблицы: виден даже там, где картинки отключены.
+// Логотип — стопка из трёх слоёв-модулей (как знак Мультикнопки), собрана из ячеек таблицы:
+// виден даже там, где картинки отключены.
 function logo() {
-  const cell = (color) =>
-    `<td style="width:9px;height:9px;background:${color};border-radius:3px;font-size:0;line-height:0">&nbsp;</td>`;
-  const gap = `<td style="width:3px;font-size:0;line-height:0">&nbsp;</td>`;
+  const bar = (color, w) =>
+    `<tr><td align="center"><table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td style="width:${w}px;height:5px;background:${color};border-radius:3px;font-size:0;line-height:0">&nbsp;</td></tr></table></td></tr>`;
+  const gap = `<tr><td style="height:2px;font-size:0;line-height:0">&nbsp;</td></tr>`;
   return (
-    `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table;vertical-align:middle">` +
-    `<tr>${cell("#9D83FF")}${gap}${cell("#9D83FF")}</tr>` +
-    `<tr><td colspan="3" style="height:3px;font-size:0;line-height:0">&nbsp;</td></tr>` +
-    `<tr>${cell("#9D83FF")}${gap}${cell("#FFFFFF")}</tr></table>`
+    `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="display:inline-table;vertical-align:middle;width:22px">` +
+    bar("#F7F6FB", 10) + gap + bar("#9D83FF", 22) + gap + bar("#6C4CE0", 22) + gap + bar("#7BE0B9", 22) +
+    `</table>`
   );
 }
 

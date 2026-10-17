@@ -1,4 +1,4 @@
-import { Money } from "./money.js?v=33";
+import { Money } from "./money.js?v=34";
 export const FinanceData = (() => {
   const EPOCH = "1970-01-01T00:00:00.000Z";
   const collections = ["accounts", "ops", "goals", "merchantRules"];

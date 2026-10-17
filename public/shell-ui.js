@@ -1,9 +1,9 @@
-import { $, esc, money } from "./format.js?v=33";
-import { localDate, operationDateOrder } from "./dates.js?v=33";
-import { icon, categoryVisual } from "./icons.js?v=33";
-import { go, edit, openOperationFromRow } from "./app.js?v=33";
-import { animateDialogClose } from "./ui.js?v=33";
-import { themeControls } from "./appearance.js?v=33";
+import { $, esc, money } from "./format.js?v=34";
+import { localDate, operationDateOrder } from "./dates.js?v=34";
+import { icon, categoryVisual } from "./icons.js?v=34";
+import { go, edit, openOperationFromRow } from "./app.js?v=34";
+import { animateDialogClose } from "./ui.js?v=34";
+import { themeControls } from "./appearance.js?v=34";
 
 const SECONDARY = [
   ["Аналитика", "analytics", "Расходы и доходы"],
@@ -12,6 +12,7 @@ const SECONDARY = [
   ["Категории", "categories", "Категории и правила магазинов"],
   ["Личный кабинет", "profile", "Аккаунт, копии и скриншоты"],
   ["Настройки", "settings", "Тема и оформление"],
+  ["Справка", "help", "Как пользоваться, ответы на вопросы"],
 ];
 export function navigationMarkup(page) {
   const active = ["Обзор", "Операции", "Бюджет"].includes(page) ? page : "Ещё";

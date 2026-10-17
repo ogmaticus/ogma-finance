@@ -1,12 +1,12 @@
-import { Money } from "./money.js?v=33";
-import { state } from "./state.js?v=33";
-import { FinanceData } from "./data-model.js?v=33";
-import { liveRecords } from "./sync-core.js?v=33";
-import { budgetOwner } from "./budget-ui.js?v=33";
-import { $, money, esc } from "./format.js?v=33";
-import { showNotice, askConfirm, animateDialogClose, askForm } from "./ui.js?v=33";
-import { save, render } from "./app.js?v=33";
-import { FinanceOCR } from "./ocr-parser.js?v=33";
+import { Money } from "./money.js?v=34";
+import { state } from "./state.js?v=34";
+import { FinanceData } from "./data-model.js?v=34";
+import { liveRecords } from "./sync-core.js?v=34";
+import { budgetOwner } from "./budget-ui.js?v=34";
+import { $, money, esc } from "./format.js?v=34";
+import { showNotice, askConfirm, animateDialogClose, askForm } from "./ui.js?v=34";
+import { save, render } from "./app.js?v=34";
+import { FinanceOCR } from "./ocr-parser.js?v=34";
 export function accountDeletionData(input, id, mode, target, now = new Date().toISOString()) {
   let data = FinanceData.normalize(input, now);
   if (!FinanceData.live(data.accounts).some((record) => record.id === id))

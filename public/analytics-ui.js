@@ -1,10 +1,10 @@
-import { FinanceData } from "./data-model.js?v=33";
-import { Money } from "./money.js?v=33";
-import { FinanceBudget } from "./budget-core.js?v=33";
-import { $, esc, money } from "./format.js?v=33";
-import { state } from "./state.js?v=33";
-import { render } from "./app.js?v=33";
-import { icon, categoryVisual } from "./icons.js?v=33";
+import { FinanceData } from "./data-model.js?v=34";
+import { Money } from "./money.js?v=34";
+import { FinanceBudget } from "./budget-core.js?v=34";
+import { $, esc, money } from "./format.js?v=34";
+import { state } from "./state.js?v=34";
+import { render } from "./app.js?v=34";
+import { icon, categoryVisual } from "./icons.js?v=34";
 
 export function monthlyFlow(ops, month) {
   let incomeMinor = 0,

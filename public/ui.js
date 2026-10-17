@@ -1,5 +1,5 @@
-import { state } from "./state.js?v=33";
-import { $, esc } from "./format.js?v=33";
+import { state } from "./state.js?v=34";
+import { $, esc } from "./format.js?v=34";
 export function animateDialogClose(dialog, value = "") {
   if (dialog?.id === "logoutdialog" && true && state.cloudLogoutBusy) return Promise.resolve();
   if (!dialog || !dialog.open) return Promise.resolve();
