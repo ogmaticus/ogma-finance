@@ -23,7 +23,15 @@ jobs:
       - run: node scripts/generate-release.mjs
       - run: npm run lint
       - run: npm run format:check
-      - run: npm test
+      - name: npm test
+        shell: bash
+        run: |
+          set -o pipefail
+          npm test 2>&1 | tee test.log || {
+            # Хвост вывода — в аннотацию: так причину видно без доступа к логам.
+            tail -40 test.log | python3 -c 'import sys;d=sys.stdin.read().replace("%","%25").replace("\r","").replace("\n","%0A");print("::error title=npm test::"+d[-3500:])'
+            exit 1
+          }
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - name: Start server v2
