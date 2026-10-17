@@ -1,6 +1,8 @@
 :root {
   --sidebar-width: 220px;
   --content-wide-max: 1440px;
+  /* % считается от ширины окна там, где переменная используется (отступ main). */
+  --wide-gutter: calc((100% - var(--sidebar-width) - var(--content-wide-max)) / 2);
   color-scheme: light;
   --bg: #f6f8fb;
   --surface: #ffffff;
