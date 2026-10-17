@@ -1,7 +1,7 @@
 """Рендер reel.html в кадры PNG.
 python3 render.py OUTDIR [fps] [t1,t2,...]  — без списка рендерит весь ролик.
 """
-import sys, pathlib, http.server, threading, functools
+import sys, os, pathlib, http.server, threading, functools
 from playwright.sync_api import sync_playwright
 
 here = pathlib.Path(__file__).parent
@@ -23,7 +23,10 @@ with sync_playwright() as p:
     dur = pg.evaluate("window.DURATION")
     if times is None:
         times = [i / fps for i in range(int(dur * fps))]
+    start = int(os.environ.get('START', '0'))
     for i, t in enumerate(times):
+        if i < start:
+            continue
         pg.evaluate(f"render({t})")
         pg.screenshot(path=str(out / f"f{i:05d}.png"))
     b.close()
