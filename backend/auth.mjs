@@ -2,7 +2,7 @@
 import { loginCodeEmail } from "./mail-templates.mjs";
 import crypto from "node:crypto";
 
-export const CONSENT_VERSION = "2026-10-15";
+export const CONSENT_VERSION = "2026-10-17";
 export const SESSION_DAYS = 30;
 const CODE_TTL_MINUTES = 10;
 const MAX_CODE_ATTEMPTS = 5;

@@ -1,4 +1,4 @@
-const CONSENT_VERSION = "2026-10-15";
+const CONSENT_VERSION = "2026-10-17";
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
 const rawReturn = params.get("return_to") || "/finance";

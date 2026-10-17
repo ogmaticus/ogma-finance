@@ -75,7 +75,7 @@ async function login(email) {
   const r1 = await req("/api/auth/request-code", { method: "POST", body: { email } });
   assert.equal(r1.status, 200, r1.text);
   const code = await lastCode(email);
-  const r2 = await req("/api/auth/verify", { method: "POST", body: { email, code, consent: "2026-10-15" } });
+  const r2 = await req("/api/auth/verify", { method: "POST", body: { email, code, consent: "2026-10-17" } });
   assert.equal(r2.status, 200, r2.text);
   return r2.headers.get("set-cookie").split(";")[0];
 }
@@ -96,23 +96,23 @@ test("login: origin, validation, rate limit, consent, wrong code, session cookie
   assert.equal(again.status, 429);
   const code = await lastCode(email);
   const wrong = code === "000000" ? "111111" : "000000";
-  assert.equal((await req("/api/auth/verify", { method: "POST", body: { email, code: wrong, consent: "2026-10-15" } })).status, 400);
+  assert.equal((await req("/api/auth/verify", { method: "POST", body: { email, code: wrong, consent: "2026-10-17" } })).status, 400);
   const noConsent = await req("/api/auth/verify", { method: "POST", body: { email, code } });
   assert.equal(noConsent.status, 428);
   assert.equal(noConsent.json.code, "consent_required");
   assert.equal((await pool.query("SELECT count(*)::int n FROM users")).rows[0].n, 0, "no user before consent");
-  const ok = await req("/api/auth/verify", { method: "POST", body: { email, code, consent: "2026-10-15" } });
+  const ok = await req("/api/auth/verify", { method: "POST", body: { email, code, consent: "2026-10-17" } });
   assert.equal(ok.status, 200);
   const cookie = ok.headers.get("set-cookie");
   assert.match(cookie, /HttpOnly/);
   assert.match(cookie, /SameSite=Lax/);
   // A code works only once.
-  assert.equal((await req("/api/auth/verify", { method: "POST", body: { email, code, consent: "2026-10-15" } })).status, 400);
+  assert.equal((await req("/api/auth/verify", { method: "POST", body: { email, code, consent: "2026-10-17" } })).status, 400);
   const session = await req("/api/session", { cookie: cookie.split(";")[0] });
   assert.equal(session.json.user.email, email);
   const consent = (await pool.query("SELECT * FROM consents")).rows;
   assert.equal(consent.length, 1);
-  assert.equal(consent[0].version, "2026-10-15");
+  assert.equal(consent[0].version, "2026-10-17");
   assert.ok(consent[0].ip);
   // Sessions and codes are stored only as hashes.
   const token = cookie.split(";")[0].split("=")[1];
@@ -126,8 +126,8 @@ test("login: brute force on a code is stopped after 5 attempts", async () => {
   const code = await lastCode(email);
   const wrong = String((Number(code) + 1) % 1000000).padStart(6, "0");
   for (let i = 0; i < 5; i++)
-    assert.equal((await req("/api/auth/verify", { method: "POST", body: { email, code: wrong, consent: "2026-10-15" } })).status, 400);
-  const blocked = await req("/api/auth/verify", { method: "POST", body: { email, code, consent: "2026-10-15" } });
+    assert.equal((await req("/api/auth/verify", { method: "POST", body: { email, code: wrong, consent: "2026-10-17" } })).status, 400);
+  const blocked = await req("/api/auth/verify", { method: "POST", body: { email, code, consent: "2026-10-17" } });
   assert.equal(blocked.status, 429, "even the right code is refused after too many attempts");
 });
 
