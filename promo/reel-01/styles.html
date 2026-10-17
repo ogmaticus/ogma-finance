@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><title>Стили ролика</title>
+<style>
+@font-face{font-family:Rubik;src:url('fonts/Rubik-cyrillic-variable.woff2') format('woff2');font-weight:300 900;unicode-range:U+0400-045F}
+@font-face{font-family:Rubik;src:url('fonts/Rubik-latin-variable.woff2') format('woff2');font-weight:300 900;unicode-range:U+0000-00FF,U+2000-206F,U+20A0-20C0}
+@font-face{font-family:Plex;src:url('fonts/IBMPlexSans-Medium.woff2') format('woff2');font-weight:500}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#222;display:flex;gap:40px;padding:40px;width:max-content;font-family:Rubik}
+.set{display:flex;flex-direction:column;gap:16px}
+.set h2{color:#fff;font:600 44px Rubik;letter-spacing:-.03em}
+.row{display:flex;gap:20px}
+.f{width:540px;height:960px;position:relative;overflow:hidden;border-radius:24px}
+.big{position:absolute;left:36px;right:30px;font-weight:800;letter-spacing:-.065em;line-height:.9;text-transform:uppercase}
+.sub{position:absolute;left:36px;right:36px;bottom:150px;font:500 25px/1.25 Plex}
+.btn{position:absolute;width:250px;height:250px;border-radius:66px;display:grid;place-items:center}
+.btn .g{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.btn .g span{width:56px;height:56px;border-radius:16px}
+.chip{position:absolute;padding:12px 20px;border-radius:99px;font:600 24px Rubik;letter-spacing:-.02em}
+.word{position:absolute;left:0;right:0;text-align:center;font-weight:700;font-size:70px;letter-spacing:-.06em}
+
+/* A — Electric block */
+.A1{background:#5b2bff}
+.A1 .big{top:120px;font-size:112px;color:#fff}
+.A1 .big em{font-style:normal;color:#c6ff3d}
+.A1 .sticker{position:absolute;right:30px;top:560px;width:230px;height:230px;border-radius:50%;background:#ff5a4e;color:#fff;display:grid;place-items:center;text-align:center;font:800 40px/0.95 Rubik;letter-spacing:-.05em;transform:rotate(-12deg)}
+.A1 .sub{color:#fff}
+.A2{background:#c6ff3d}
+.A2 .btn{left:145px;top:250px;background:#5b2bff;box-shadow:16px 16px 0 #111}
+.A2 .btn .g span{background:#c6ff3d}.A2 .btn .g span:last-child{background:#fff}
+.A2 .word{top:600px;color:#111}
+.A2 .word span{color:#5b2bff}
+.A2 .chip{background:#111;color:#c6ff3d}
+.A2 .sub{color:#111}
+
+/* B — Neon night */
+.B1{background:#07060d}
+.B1:before{content:"";position:absolute;width:700px;height:700px;left:-120px;top:380px;border-radius:50%;background:conic-gradient(from 200deg,#7b3cff,#ff3c9d,#ff8a3c,#7b3cff);filter:blur(90px);opacity:.75}
+.B1 .big{top:120px;font-size:104px;background:linear-gradient(90deg,#fff 40%,#ff9be0);-webkit-background-clip:text;color:transparent}
+.B1 .sub{color:#fff}
+.B2{background:#07060d}
+.B2:before{content:"";position:absolute;width:520px;height:520px;left:10px;top:120px;border-radius:50%;background:conic-gradient(#7b3cff,#ff3c9d,#ff8a3c,#3cd7ff,#7b3cff);filter:blur(70px);opacity:.8}
+.B2 .btn{left:145px;top:250px;background:linear-gradient(145deg,#2a2a35,#0d0d14);border:2px solid rgba(255,255,255,.35);box-shadow:0 0 60px rgba(255,60,157,.6),inset 0 2px 0 rgba(255,255,255,.4)}
+.B2 .btn .g span{background:linear-gradient(135deg,#ff3c9d,#7b3cff)}.B2 .btn .g span:last-child{background:#3cd7ff}
+.B2 .word{top:600px;color:#fff}.B2 .word span{color:#ff3c9d}
+.B2 .chip{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.3)}
+.B2 .sub{color:#fff}
+
+/* C — Candy pop */
+.C1{background:#ffd9e8}
+.C1 .big{top:120px;font-size:108px;color:#1b1340}
+.C1 .big em{font-style:normal;background:#7b5cff;color:#fff;padding:0 12px;border-radius:18px}
+.C1 .blob{position:absolute;width:300px;height:300px;right:-60px;top:560px;border-radius:44% 56% 62% 38%/48% 40% 60% 52%;background:#ffb547}
+.C1 .blob2{position:absolute;width:200px;height:200px;left:40px;top:640px;border-radius:50%;background:#62e3b0}
+.C1 .sub{color:#1b1340}
+.C2{background:#e5dcff}
+.C2 .btn{left:145px;top:250px;background:linear-gradient(160deg,#9c85ff,#6a45ff);box-shadow:0 30px 0 #3f22c9,0 50px 60px rgba(63,34,201,.35)}
+.C2 .btn .g span{background:#fff}.C2 .btn .g span:last-child{background:#ffb547}
+.C2 .word{top:610px;color:#1b1340}.C2 .word span{color:#ff5fa2}
+.C2 .chip{background:#fff;color:#1b1340;box-shadow:0 6px 0 #1b1340}
+.C2 .sub{color:#1b1340}
+</style></head><body>
+
+<div class="set"><h2>A · Электрик</h2><div class="row">
+ <div class="f A1"><div class="big">Деньги<br>в заметках?<br><em>Бизнес<br>в Excel?</em></div><div class="sticker">СКЛАД<br>В ГОЛОВЕ</div><div class="sub">Деньги — в заметках. Бизнес — в таблицах…</div></div>
+ <div class="f A2"><div class="btn"><div class="g"><span></span><span></span><span></span><span></span></div></div><div class="word">мультикнопка<span>.</span></div><div class="chip" style="left:60px;top:720px">деньги</div><div class="chip" style="left:205px;top:720px">бизнес</div><div class="chip" style="left:355px;top:720px">склад</div><div class="sub">Одна кнопка — для денег, бизнеса и склада.</div></div>
+</div></div>
+
+<div class="set"><h2>B · Неон</h2><div class="row">
+ <div class="f B1"><div class="big">Деньги<br>в заметках?<br>Бизнес<br>в Excel?</div><div class="sub">Деньги — в заметках. Бизнес — в таблицах…</div></div>
+ <div class="f B2"><div class="btn"><div class="g"><span></span><span></span><span></span><span></span></div></div><div class="word">мультикнопка<span>.</span></div><div class="chip" style="left:60px;top:720px">деньги</div><div class="chip" style="left:205px;top:720px">бизнес</div><div class="chip" style="left:355px;top:720px">склад</div><div class="sub">Одна кнопка — для денег, бизнеса и склада.</div></div>
+</div></div>
+
+<div class="set"><h2>C · Конфета</h2><div class="row">
+ <div class="f C1"><div class="blob"></div><div class="blob2"></div><div class="big">Деньги<br>в заметках?<br><em>Бизнес</em><br>в Excel?</div><div class="sub">Деньги — в заметках. Бизнес — в таблицах…</div></div>
+ <div class="f C2"><div class="btn"><div class="g"><span></span><span></span><span></span><span></span></div></div><div class="word">мультикнопка<span>.</span></div><div class="chip" style="left:60px;top:720px">деньги</div><div class="chip" style="left:205px;top:720px">бизнес</div><div class="chip" style="left:355px;top:720px">склад</div><div class="sub">Одна кнопка — для денег, бизнеса и склада.</div></div>
+</div></div>
+</body></html>
