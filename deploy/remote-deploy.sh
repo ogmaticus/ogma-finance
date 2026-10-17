@@ -60,6 +60,8 @@ fi
 bash "$APP_DIR/deploy/sync-deploy-keys.sh"
 bash "$APP_DIR/deploy/configure-caddy.sh" "$DOMAIN" "$REDIRECTS" "$LANDING"
 bash "$APP_DIR/deploy/harden-ssh.sh"
+bash "$APP_DIR/deploy/setup-fail2ban.sh" || echo "fail2ban: ошибка настройки (выкладка продолжается)" >&2
+bash "$APP_DIR/deploy/harden-caddy.sh" || echo "Caddy: ошибка изоляции (выкладка продолжается)" >&2
 
 # Образ хостинга открывает порт панели ispmanager — она не используется.
 ufw delete allow ispmanager >/dev/null 2>&1 || true
