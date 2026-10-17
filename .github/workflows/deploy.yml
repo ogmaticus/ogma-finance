@@ -153,6 +153,34 @@ jobs:
           fi
           rm -f settings
 
+      - name: Upload backup settings
+        if: steps.check.outputs.ready == 'true'
+        env:
+          S3_ACCESS_KEY: ${{ secrets.BACKUP_S3_ACCESS_KEY }}
+          S3_SECRET_KEY: ${{ secrets.BACKUP_S3_SECRET_KEY }}
+          AGE_RECIPIENT: ${{ secrets.BACKUP_AGE_RECIPIENT }}
+          S3_BUCKET: ${{ vars.BACKUP_S3_BUCKET || 'ogma-finance-backups' }}
+        run: |
+          # Внешний бэкап включается, только когда заданы все три секрета.
+          if [ -z "$S3_ACCESS_KEY" ] || [ -z "$S3_SECRET_KEY" ] || [ -z "$AGE_RECIPIENT" ]; then
+            echo "Секреты BACKUP_* не заданы — внешний бэкап не настраиваем"; exit 0
+          fi
+          case "$AGE_RECIPIENT" in age1*) ;; *) echo "::error::BACKUP_AGE_RECIPIENT должен быть открытым ключом age1..."; exit 1;; esac
+          umask 077
+          {
+            echo "AGE_RECIPIENT=$AGE_RECIPIENT"
+            echo "S3_ENDPOINT=https://s3.ru-1.storage.selcloud.ru"
+            echo "S3_REGION=ru-1"
+            echo "S3_BUCKET=$S3_BUCKET"
+            echo "S3_PREFIX=finance"
+            echo "S3_ADDRESSING=vhost"
+            echo "S3_ACCESS_KEY=$S3_ACCESS_KEY"
+            echo "S3_SECRET_KEY=$S3_SECRET_KEY"
+          } > backup.env
+          ssh server 'umask 077; mkdir -p /etc/finance; cat > /etc/finance/backup.env.new && chown root:root /etc/finance/backup.env.new && chmod 600 /etc/finance/backup.env.new && mv /etc/finance/backup.env.new /etc/finance/backup.env' < backup.env
+          rm -f backup.env
+          echo "Настройки внешнего бэкапа обновлены"
+
       - name: Install and restart
         if: steps.check.outputs.ready == 'true'
         env:
