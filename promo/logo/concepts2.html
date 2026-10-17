@@ -1,0 +1,55 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Логотип — концепты 2</title>
+<style>
+@font-face{font-family:Rubik;src:url('../reel-01/fonts/Rubik-cyrillic-variable.woff2') format('woff2');font-weight:300 900;unicode-range:U+0400-045F}
+@font-face{font-family:Rubik;src:url('../reel-01/fonts/Rubik-latin-variable.woff2') format('woff2');font-weight:300 900;unicode-range:U+0000-00FF}
+body{margin:0;background:#f4f2fa;font-family:Rubik;padding:40px;width:1660px}
+.row{display:flex;gap:28px}
+.c{width:380px;background:#fff;border-radius:28px;padding:28px;box-shadow:0 10px 30px rgba(23,21,43,.08);box-sizing:border-box}
+.c h3{margin:0 0 6px;font-size:28px;letter-spacing:-.03em}
+.c p{margin:0 0 20px;color:#6b6880;font-size:17px;line-height:1.35;height:70px}
+.big{display:flex;justify-content:center;margin-bottom:18px}
+.sm{display:flex;gap:14px;align-items:center;justify-content:center;background:#17152b;border-radius:16px;padding:12px}
+.light{background:#f4f2fa}
+.word{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:16px;font-size:26px;font-weight:600;letter-spacing:-.05em;color:#17152b}
+.word i{color:#9d83ff;font-style:normal}
+</style></head><body><div class="row">
+
+<!-- E: стопка — кнопка сверху, под ней слои-модули -->
+<div class="c" data-id="E"><h3>E · Стопка модулей</h3><p>Кнопка лежит на стопке слоёв. Каждый слой — инструмент: финансы, бизнес, склад.</p>
+<svg viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="#17152B"/>
+<path d="M32 44 12 34.5l20-9.5 20 9.5z" fill="#7BE0B9"/><path d="M32 38 12 28.5 32 19l20 9.5z" fill="#6C4CE0"/><path d="M32 32 12 22.5 32 13l20 9.5z" fill="#9D83FF"/>
+<ellipse cx="32" cy="22.5" rx="7.5" ry="3.6" fill="#F7F6FB"/>
+<path d="M12 34.5 32 44l20-9.5V38L32 47.5 12 38z" fill="#4AAE8A" opacity=".9"/></svg></div>
+
+<!-- F: нажатие — палец/курсор нажимает кнопку, от неё волны -->
+<div class="c" data-id="F"><h3>F · Одно нажатие</h3><p>Кнопка в момент нажатия, от неё расходятся волны — всё запускается одним касанием.</p>
+<svg viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="#17152B"/>
+<circle cx="32" cy="32" r="21" fill="none" stroke="#9D83FF" stroke-width="2.2" opacity=".35"/><circle cx="32" cy="32" r="15.5" fill="none" stroke="#9D83FF" stroke-width="2.6" opacity=".7"/>
+<circle cx="32" cy="34" r="10" fill="#4A2FB8"/><circle cx="32" cy="32.5" r="10" fill="#9D83FF"/><ellipse cx="29" cy="29" rx="4" ry="2.4" fill="#fff" opacity=".45"/></svg></div>
+
+<!-- G: шестерёнка-кнопка — зубцы = инструменты, центр = кнопка -->
+<div class="c" data-id="G"><h3>G · Механизм</h3><p>Шестерёнка из модулей, в центре — кнопка. Инструменты работают как единый механизм.</p>
+<svg viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="#17152B"/>
+<g fill="#9D83FF" transform="translate(32 32)"><g id="tooth"><rect x="-4.5" y="-24" width="9" height="12" rx="3.5"/></g>
+<use href="#tooth" transform="rotate(60)"/><use href="#tooth" transform="rotate(120)"/><use href="#tooth" transform="rotate(180)" fill="#7BE0B9"/><use href="#tooth" transform="rotate(240)"/><use href="#tooth" transform="rotate(300)"/>
+<circle r="15" fill="#6C4CE0"/><circle r="8.5" fill="#F7F6FB"/></g></svg></div>
+
+<!-- H: кнопка-«м»: строчная м из двух кнопок-клавиш -->
+<div class="c" data-id="H"><h3>H · м из клавиш</h3><p>Строчная «м», собранная из двух клавиш. Читается как буква и как ряд кнопок.</p>
+<svg viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="#17152B"/>
+<rect x="11" y="22" width="19" height="25" rx="7" fill="#4A2FB8"/><rect x="11" y="19" width="19" height="25" rx="7" fill="#9D83FF"/>
+<rect x="34" y="22" width="19" height="25" rx="7" fill="#3c9e7c"/><rect x="34" y="19" width="19" height="25" rx="7" fill="#7BE0B9"/>
+<path d="M17 37v-8m6 8v-8m17 8v-8m6 8v-8" stroke="#17152B" stroke-width="3" stroke-linecap="round" opacity=".55"/></svg></div>
+</div>
+
+<div class="row" style="margin-top:28px">
+ <div class="c" style="width:1604px"><h3>Мелкий размер и с названием</h3><div class="sm" id="smrow"></div><div class="sm light" id="smrow2" style="margin-top:10px"></div><div class="row" id="words" style="justify-content:space-around;margin-top:8px"></div></div>
+</div>
+<script>
+const sm=document.getElementById('smrow'),sm2=document.getElementById('smrow2'),w=document.getElementById('words');
+document.querySelectorAll('.c[data-id]').forEach(c=>{const svg=c.querySelector('svg');const src=svg.outerHTML;
+ const mk=(s)=>{const d=document.createElement('div');d.innerHTML=src.replace('<svg ',`<svg width="${s}" height="${s}" `);return d};
+ const big=mk(200);c.insertBefore(Object.assign(big,{className:'big'}),svg);svg.remove();
+ sm.appendChild(mk(24));sm.appendChild(mk(32));sm.appendChild(mk(56));sm2.appendChild(mk(32));sm2.appendChild(mk(56));
+ const x=mk(40);x.className='word';x.insertAdjacentHTML('beforeend','мультикнопка<i>.</i>');w.appendChild(x)});
+</script></body></html>

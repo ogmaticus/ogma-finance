@@ -1,0 +1,52 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Логотип — концепты</title>
+<style>
+@font-face{font-family:Rubik;src:url('../reel-01/fonts/Rubik-cyrillic-variable.woff2') format('woff2');font-weight:300 900;unicode-range:U+0400-045F}
+@font-face{font-family:Rubik;src:url('../reel-01/fonts/Rubik-latin-variable.woff2') format('woff2');font-weight:300 900;unicode-range:U+0000-00FF}
+body{margin:0;background:#f4f2fa;font-family:Rubik;padding:40px;width:max-content}
+.row{display:flex;gap:36px}
+.c{width:330px;background:#fff;border-radius:28px;padding:28px;box-shadow:0 10px 30px rgba(23,21,43,.08)}
+.c h3{margin:0 0 6px;font-size:28px;letter-spacing:-.03em}
+.c p{margin:0 0 20px;color:#6b6880;font-size:17px;line-height:1.35;height:70px}
+.big{display:flex;justify-content:center;margin-bottom:20px}
+.sm{display:flex;gap:16px;align-items:center;justify-content:center;background:#17152b;border-radius:18px;padding:14px}
+.word{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:18px;font-size:26px;font-weight:600;letter-spacing:-.05em;color:#17152b}
+.word i{color:#9d83ff;font-style:normal}
+</style></head><body><div class="row">
+
+<!-- A: кнопка-мультитул — инструменты раскрываются веером из одной кнопки -->
+<div class="c"><h3>A · Мультитул</h3><p>Одна кнопка, из которой веером раскрываются инструменты, как у складного ножа.</p>
+<div class="big"><svg id="A" width="200" height="200" viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="#17152B"/>
+<g transform="translate(22 42)"><rect x="-4" y="-30" width="8" height="30" rx="4" fill="#9D83FF" transform="rotate(-8)"/><rect x="-4" y="-27" width="8" height="27" rx="4" fill="#7B5CF0" transform="rotate(22)"/><rect x="-4" y="-24" width="8" height="24" rx="4" fill="#B9A4FF" transform="rotate(52)"/><rect x="-4" y="-20" width="8" height="20" rx="4" fill="#7BE0B9" transform="rotate(82)"/><circle r="9" fill="#F7F6FB"/><circle r="3.2" fill="#17152B"/></g></svg></div>
+</div>
+
+<!-- B: кнопка + слоты: одна нажатая кнопка, остальные — пустые места под будущие инструменты -->
+<div class="c"><h3>B · Кнопка и слоты</h3><p>Одна живая кнопка и пустые слоты под будущие инструменты: Финансы уже есть, остальное подключается.</p>
+<div class="big"><svg id="B" width="200" height="200" viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="#17152B"/>
+<g fill="none" stroke="#9D83FF" stroke-width="2.4" stroke-dasharray="3.2 2.6"><rect x="35" y="13" width="16" height="16" rx="5"/><rect x="13" y="35" width="16" height="16" rx="5"/><rect x="35" y="35" width="16" height="16" rx="5"/></g>
+<rect x="13" y="15" width="16" height="16" rx="5" fill="#4A2FB8"/><rect x="13" y="12" width="16" height="16" rx="5" fill="#9D83FF"/><rect x="16.5" y="14" width="9" height="3" rx="1.5" fill="#fff" opacity=".45"/></svg></div>
+</div>
+
+<!-- C: круглая кнопка с плюсом-лепестками — «мульти» -->
+<div class="c"><h3>C · Нажми — и всё</h3><p>Большая круглая кнопка, вокруг неё четыре модуля-лепестка. Кнопка в центре управляет всем.</p>
+<div class="big"><svg id="C" width="200" height="200" viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="#17152B"/>
+<g fill="#9D83FF"><rect x="27" y="7" width="10" height="13" rx="5"/><rect x="44" y="27" width="13" height="10" rx="5"/><rect x="27" y="44" width="10" height="13" rx="5" fill="#7BE0B9"/><rect x="7" y="27" width="13" height="10" rx="5" fill="#B9A4FF"/></g>
+<circle cx="32" cy="34" r="10.5" fill="#4A2FB8"/><circle cx="32" cy="32" r="10.5" fill="#F7F6FB"/><circle cx="32" cy="32" r="4" fill="#9D83FF"/></svg></div>
+</div>
+
+<!-- D: клавиша с буквой М из трёх кнопок -->
+<div class="c"><h3>D · Клавиша «М»</h3><p>Объёмная клавиша с буквой М. Точка в центре — нажатие, которое запускает инструменты.</p>
+<div class="big"><svg id="D" width="200" height="200" viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="#17152B"/>
+<rect x="9" y="12" width="46" height="44" rx="12" fill="#4A2FB8"/><rect x="9" y="8" width="46" height="44" rx="12" fill="#6C4CE0"/>
+<path d="M20 41V21l12 12 12-12v20" fill="none" stroke="#F7F6FB" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="33" r="4.2" fill="#7BE0B9"/></svg></div>
+</div>
+</div>
+<div class="row" style="margin-top:30px">
+ <div class="c" style="width:1428px"><h3>Мелкий размер (иконка 32 px) и с названием</h3><div class="sm" id="smrow"></div><div class="row" id="words" style="justify-content:space-around;margin-top:10px"></div></div>
+</div>
+<script>
+const ids=['A','B','C','D'];const sm=document.getElementById('smrow'),w=document.getElementById('words');
+ids.forEach(id=>{const s=document.getElementById(id).outerHTML;
+ const a=document.createElement('div');a.innerHTML=s.replace('width="200" height="200"','width="32" height="32"').replace('id="'+id+'"','');sm.appendChild(a);
+ const b=document.createElement('div');b.innerHTML=s.replace('width="200" height="200"','width="56" height="56"').replace('id="'+id+'"','');sm.appendChild(b);
+ const c=document.createElement('div');c.className='word';c.innerHTML=s.replace('width="200" height="200"','width="40" height="40"').replace('id="'+id+'"','')+'мультикнопка<i>.</i>';w.appendChild(c)});
+</script></body></html>
