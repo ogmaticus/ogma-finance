@@ -1,0 +1,28 @@
+name: Domain watch
+# Каждые 30 минут: если домен уже указывает на сервер, а HTTPS ещё не работает —
+# запускает выкладку, которая включит HTTPS и переадресации. Когда всё работает, ничего не делает.
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+permissions:
+  actions: write
+  contents: read
+jobs:
+  watch:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check DNS and HTTPS
+        env:
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          DOMAIN: ${{ vars.DEPLOY_DOMAIN || 'app.multiknopka.ru' }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          ip="$(dig +short A "$DOMAIN" @8.8.8.8 | tail -1)"
+          echo "DNS $DOMAIN -> ${ip:-нет}"
+          if [ "$ip" != "$HOST" ]; then echo "Домен ещё не указывает на сервер — ждём"; exit 0; fi
+          if curl -fsS -m 15 "https://$DOMAIN/healthz" >/dev/null 2>&1; then echo "HTTPS уже работает"; exit 0; fi
+          if gh run list -R "$REPO" --workflow deploy.yml --status in_progress --json databaseId --jq 'length' | grep -qv '^0$'; then echo "Выкладка уже идёт"; exit 0; fi
+          echo "::notice::DNS готов, HTTPS ещё нет — запускаю выкладку"
+          gh workflow run deploy.yml -R "$REPO" --ref main
