@@ -72,10 +72,13 @@ try {
 } catch {}
 await writeFile(STATE_FILE, JSON.stringify({ down: nowDown, at: new Date().toISOString() }));
 
-if (nowDown !== Boolean(prev.down)) {
+const testAlert = process.env.TEST_ALERT === "true";
+if (testAlert || nowDown !== Boolean(prev.down)) {
   const env = process.env;
   const to = env.ALERT_EMAIL || env.SMTP_USER;
-  const subject = nowDown
+  const subject = testAlert
+    ? "Мультикнопка: проверка оповещений мониторинга"
+    : nowDown
     ? `Мультикнопка: сбой — ${failed.map((f) => f.name).join(", ")}`
     : "Мультикнопка: всё снова работает";
   const text =
@@ -93,7 +96,7 @@ if (nowDown !== Boolean(prev.down)) {
       MAIL_FROM_NAME: "Мультикнопка · мониторинг",
     });
     await mailer.send({ to, subject, text });
-    console.log("Письмо отправлено");
+    console.log("::notice::Письмо отправлено на " + to.replace(/^(.).*@/, "$1***@"));
   } else console.log("SMTP не настроен — письмо не отправлено");
 }
 if (nowDown) {

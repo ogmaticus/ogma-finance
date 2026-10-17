@@ -5,6 +5,11 @@ on:
   schedule:
     - cron: "*/10 * * * *"
   workflow_dispatch:
+    inputs:
+      test_alert:
+        description: Отправить тестовое письмо
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -35,6 +40,7 @@ jobs:
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
           SMTP_HOST: ${{ vars.SMTP_HOST }}
+          TEST_ALERT: ${{ inputs.test_alert || false }}
         run: node scripts/uptime-check.mjs uptime-state.json
       - name: Save state
         if: always()
