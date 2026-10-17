@@ -205,7 +205,8 @@ export async function acceptRemoteReset(remote) {
 function requireSignIn() {
   if (!state.cloudSession?.signInRequired || state.cloudSession.user) return false;
   const url = state.cloudSession.signInUrl || "/login?return_to=%2Ffinance";
-  if (typeof location !== "undefined" && typeof location.replace === "function") location.replace(url);
+  if (typeof location !== "undefined" && typeof location.replace === "function")
+    location.replace(url);
   return true;
 }
 export async function initializeCloud() {
