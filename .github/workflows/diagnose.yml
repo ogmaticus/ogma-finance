@@ -20,6 +20,7 @@ jobs:
           HOST: ${{ secrets.DEPLOY_HOST }}
         run: |
           note() { printf '%s' "$2" | head -c 3000 | python3 -c 'import sys;d=sys.stdin.read().replace("%","%25").replace("\r","").replace("\n","%0A");print("::notice title='"$1"'::"+d)'; }
+          note "dns" "$(for n in app.multiknopka.ru multiknopka.ru; do echo "$n: $(dig +short A $n @8.8.8.8 | tr '\n' ' ') (NS: $(dig +short NS multiknopka.ru @8.8.8.8 | tr '\n' ' '))"; done; curl -sS -m 10 -o /dev/null -w "https://app.multiknopka.ru -> HTTP %{http_code}" https://app.multiknopka.ru/healthz 2>&1)"
           note "secret-key" "$(ssh-keygen -y -f ~/.ssh/deploy_key | awk '{print $2}')"
           note "ssh-keys" "$(ssh server 'awk "{print \$NF}" /root/.ssh/authorized_keys' 2>&1)"
           note "external-http" "$(curl -sS -m 10 -o /dev/null -w 'HTTP %{http_code} %{redirect_url}' http://$HOST/finance 2>&1)"

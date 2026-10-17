@@ -106,9 +106,11 @@ jobs:
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
           ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
           SMTP_HOST: ${{ vars.SMTP_HOST }}
+          DOMAIN: ${{ vars.DEPLOY_DOMAIN || 'app.multiknopka.ru' }}
         run: |
           umask 077
           : > settings
+          if [ -n "$DOMAIN" ]; then echo "PUBLIC_ORIGIN=https://$DOMAIN" >> settings; fi
           if [ -n "$SMTP_USER" ] && [ -n "$SMTP_PASSWORD" ]; then
             {
               echo "MAIL_TRANSPORT=smtp"
@@ -130,6 +132,6 @@ jobs:
       - name: Install and restart
         if: steps.check.outputs.ready == 'true'
         env:
-          DOMAIN: ${{ vars.DEPLOY_DOMAIN }}
+          DOMAIN: ${{ vars.DEPLOY_DOMAIN || 'app.multiknopka.ru' }}
           FULL: ${{ inputs.full_setup && '1' || '0' }}
         run: ssh server "FULL_SETUP=$FULL bash /opt/finance/deploy/remote-deploy.sh $DOMAIN"
