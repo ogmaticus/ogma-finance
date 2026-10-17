@@ -6,6 +6,7 @@ set -euo pipefail
 APP_DIR=/opt/finance
 DOMAIN="${1:-}"
 REDIRECTS="${2:-}"
+LANDING="${3:-}"
 
 chown -R root:root "$APP_DIR"
 chmod -R go-w "$APP_DIR"
@@ -57,7 +58,7 @@ else
 fi
 
 bash "$APP_DIR/deploy/sync-deploy-keys.sh"
-bash "$APP_DIR/deploy/configure-caddy.sh" "$DOMAIN" "$REDIRECTS"
+bash "$APP_DIR/deploy/configure-caddy.sh" "$DOMAIN" "$REDIRECTS" "$LANDING"
 bash "$APP_DIR/deploy/harden-ssh.sh"
 
 # Образ хостинга открывает порт панели ispmanager — она не используется.

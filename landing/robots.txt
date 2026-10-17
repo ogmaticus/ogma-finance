@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://multiknopka.ru/sitemap.xml

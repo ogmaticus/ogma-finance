@@ -105,12 +105,15 @@ jobs:
         env:
           HOST: ${{ secrets.DEPLOY_HOST }}
           WANT: ${{ vars.DEPLOY_DOMAIN || 'app.multiknopka.ru' }}
-          # Домены-переадресации (корень, www и мультикнопка.рф в punycode). Берутся только те, что уже указывают на сервер.
-          EXTRA: ${{ vars.DEPLOY_REDIRECTS || 'multiknopka.ru www.multiknopka.ru xn--80apgacfkijzj3i.xn--p1ai www.xn--80apgacfkijzj3i.xn--p1ai' }}
+          # Домены-переадресации (www и мультикнопка.рф в punycode) — на лендинг. Берутся только те, что уже указывают на сервер.
+          EXTRA: ${{ vars.DEPLOY_REDIRECTS || 'www.multiknopka.ru xn--80apgacfkijzj3i.xn--p1ai www.xn--80apgacfkijzj3i.xn--p1ai' }}
+          # Домен лендинга (папка landing/). Включается, только когда указывает на сервер.
+          LANDING: ${{ vars.DEPLOY_LANDING || 'multiknopka.ru' }}
         run: |
           ok=""
           for d in $EXTRA; do [ "$(dig +short A "$d" @8.8.8.8 | tail -1)" = "$HOST" ] && ok="$ok $d"; done
           echo "redirects=$(echo $ok)" >> "$GITHUB_OUTPUT"
+          if [ -n "$LANDING" ] && [ "$(dig +short A "$LANDING" @8.8.8.8 | tail -1)" = "$HOST" ]; then echo "landing=$LANDING" >> "$GITHUB_OUTPUT"; else echo "landing=" >> "$GITHUB_OUTPUT"; fi
           ip="$(dig +short A "$WANT" @8.8.8.8 | tail -1)"
           if [ -n "$WANT" ] && [ "$ip" = "$HOST" ]; then
             echo "domain=$WANT" >> "$GITHUB_OUTPUT"; echo "Домен $WANT указывает на сервер — включаем HTTPS"
@@ -155,5 +158,6 @@ jobs:
         env:
           DOMAIN: ${{ steps.domain.outputs.domain }}
           REDIRECTS: ${{ steps.domain.outputs.redirects }}
+          LANDING: ${{ steps.domain.outputs.landing }}
           FULL: ${{ inputs.full_setup && '1' || '0' }}
-        run: ssh server "FULL_SETUP=$FULL bash /opt/finance/deploy/remote-deploy.sh '$DOMAIN' '$REDIRECTS'"
+        run: ssh server "FULL_SETUP=$FULL bash /opt/finance/deploy/remote-deploy.sh '$DOMAIN' '$REDIRECTS' '$LANDING'"

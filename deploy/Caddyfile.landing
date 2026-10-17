@@ -1,0 +1,23 @@
+
+# Лендинг Мультикнопки: статические файлы из /opt/finance/landing (папка landing/ репозитория).
+__LANDING__ {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		-Server
+	}
+	@longcache path /fonts/* /assets/*
+	header @longcache Cache-Control "public, max-age=604800"
+	@revalidate not path /fonts/* /assets/*
+	header @revalidate Cache-Control "no-cache"
+	# Юридические документы живут в приложении.
+	@legal path /privacy /consent
+	redir @legal https://__SITE__{uri} 302
+	root * /opt/finance/landing
+	file_server
+}
