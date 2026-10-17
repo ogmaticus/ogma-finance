@@ -61,6 +61,8 @@ source "$CONF"
 : "${AGE_RECIPIENT:?AGE_RECIPIENT не задан}" "${S3_ENDPOINT:?}" "${S3_BUCKET:?}" \
   "${S3_REGION:?}" "${S3_ACCESS_KEY:?}" "${S3_SECRET_KEY:?}"
 S3_PREFIX="${S3_PREFIX:-finance}"
+# Адресация бакета: vhost (bucket.s3.…, по умолчанию) или path (s3.…/bucket).
+S3_ADDRESSING="${S3_ADDRESSING:-vhost}"
 
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
@@ -72,10 +74,13 @@ tar -cf - -C "$DIR" "$(basename "$DUMP")" \
 SIZE="$(stat -c %s "$ARCHIVE")"
 
 OBJ="$S3_PREFIX/finance-$STAMP.tar.age"
+EP="${S3_ENDPOINT%/}"
+if [[ "$S3_ADDRESSING" == "path" ]]; then URL="$EP/$S3_BUCKET/$OBJ"
+else URL="${EP%%://*}://$S3_BUCKET.${EP#*://}/$OBJ"; fi
 code="$(curl -sS -o "$TMP/resp" -w '%{http_code}' --fail-with-body \
   --aws-sigv4 "aws:amz:$S3_REGION:s3" --user "$S3_ACCESS_KEY:$S3_SECRET_KEY" \
   -H "x-amz-content-sha256: UNSIGNED-PAYLOAD" \
-  -T "$ARCHIVE" "${S3_ENDPOINT%/}/$S3_BUCKET/$OBJ" || true)"
+  -T "$ARCHIVE" "$URL" || true)"
 if [[ "$code" != "200" ]]; then
   log "ОШИБКА загрузки в S3: HTTP $code $(head -c 300 "$TMP/resp" 2>/dev/null)"
   exit 1
