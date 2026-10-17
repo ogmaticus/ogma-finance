@@ -428,3 +428,25 @@ svg{display:block}
 @media(max-width:599px){.hero-actions{column-gap:17px;row-gap:10px}.hero-actions .button-text{font-size:12px}.hero-actions .play-icon{display:none}.hero-visual{margin-top:25px}.core-button{padding:3px}.core-face{inset:3px 3px 8px}.core-face::before{inset:6px}.core-symbol{gap:6px}.core-caption{top:73.5%}.hero-bottom{padding-block:20px}.fragment-grid{gap:12px}.fragment-card{min-height:260px}.fragment-decoration{height:90px;margin-top:20px}.mini-wallets span{width:105px}.demo-wrap .demo-disclaimer{font-size:9px}.personal-features>article{gap:12px}.personal-features>article>.icon{width:18px;height:18px}.business-panel{width:calc(100% - 30px)}.business-includes li{gap:10px}.integration-disclaimer{font-size:10px}.roadmap-item{margin-left:5px}.final-section{padding-block:85px}.footer-bottom nav{font-size:10px}}
 @media(hover:none),(pointer:coarse){.hero-canvas{display:none}.orbit-wire,.map-flow,.orbit-dot,.floating-receipt{animation:none}.header{backdrop-filter:none}.tilt-card{transform:none!important}.hero-visual{touch-action:pan-y}.motion-ready .reveal{transition-duration:.4s;transform:translateY(12px)}.motion-ready .reveal.is-visible{transform:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}.hero-canvas{display:none}.motion-ready .reveal{opacity:1;transform:none}.ecosystem-sticky{position:relative;top:auto}.typed-word::after{display:none}.floating-receipt{transform:rotate(-5deg)}}
+
+/* Частые вопросы */
+.faq-layout{display:grid;gap:40px}
+@media(min-width:900px){.faq-layout{grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:64px}}
+.faq-heading h2{margin-top:24px}
+.faq-heading p:last-child{margin-top:24px;color:var(--muted)}
+.faq-heading a{color:var(--lavender)}
+.faq-list{display:grid;gap:12px}
+.faq-item{border:1px solid var(--line);border-radius:18px;background:var(--surface)}
+.faq-item summary{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 22px;cursor:pointer;list-style:none;font-weight:500;font-size:17px}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary span{flex:none;font-size:24px;line-height:1;color:var(--lavender);transition:transform .2s}
+.faq-item[open] summary span{transform:rotate(45deg)}
+.faq-item p{padding:0 22px 22px;color:var(--muted);font-size:15px}
+.faq-item summary:focus-visible{outline:2px solid var(--lavender);outline-offset:2px;border-radius:18px}
+@media(prefers-reduced-motion:reduce){.faq-item summary span{transition:none}}
+
+/* Страница 404 */
+.notfound{min-height:100vh;display:grid;place-items:center;text-align:center;padding:40px 20px}
+.notfound h1{margin-top:24px;font-size:clamp(36px,6vw,64px)}
+.notfound-text{margin-top:16px;color:var(--muted)}
+.notfound-actions{margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}

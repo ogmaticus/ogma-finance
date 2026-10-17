@@ -17,7 +17,14 @@ __LANDING__ {
 	header @revalidate Cache-Control "no-cache"
 	# Юридические документы живут в приложении.
 	@legal path /privacy /consent
-	redir @legal https://__SITE__{uri} 302
+	redir @legal https://__SITE__{uri} 301
 	root * /opt/finance/landing
 	file_server
+	handle_errors {
+		@missing expression {err.status_code} == 404
+		handle @missing {
+			rewrite * /404.html
+			file_server
+		}
+	}
 }

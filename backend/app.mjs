@@ -171,6 +171,11 @@ export function createApp({ config, pool, files, mailer, budget, log = () => {} 
 
     if (method !== "GET" && method !== "HEAD") return new Response("Method Not Allowed", { status: 405 });
     if (p === "/") return Response.redirect(origin + (ctx.user ? "/finance" : "/login?return_to=%2Ffinance"), 302);
+    if (p === "/robots.txt")
+      // Приложение закрыто от индексации: публичные страницы — на лендинге multiknopka.ru.
+      return new Response("User-agent: *\nDisallow: /\n", {
+        headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "public, max-age=86400" },
+      });
     if (p === "/app.html") return Response.redirect(origin + "/finance", 301);
     if (p === "/finance") return staticFile(path.join(PUBLIC_DIR, "app.html"), { csp: true });
     if (p === "/login") {
