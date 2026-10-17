@@ -19,6 +19,7 @@ jobs:
           HOST: ${{ secrets.DEPLOY_HOST }}
         run: |
           note() { printf '%s' "$2" | head -c 3000 | python3 -c 'import sys;d=sys.stdin.read().replace("%","%25").replace("\r","").replace("\n","%0A");print("::notice title='"$1"'::"+d)'; }
+          note "secret-key" "$(ssh-keygen -y -f ~/.ssh/deploy_key | awk '{print $2}')"
           note "external-http" "$(curl -sS -m 10 -o /dev/null -w 'HTTP %{http_code} %{redirect_url}' http://$HOST/finance 2>&1)"
           note "external-healthz" "$(curl -sS -m 10 http://$HOST/healthz 2>&1)"
           note "services" "$(ssh server 'for s in finance caddy postgresql finance-backup.timer; do echo "$s: $(systemctl is-active $s)"; done; ufw status | head -8' 2>&1)"
