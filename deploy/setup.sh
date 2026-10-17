@@ -94,14 +94,7 @@ sleep 2
 systemctl --no-pager --lines=5 status finance || true
 
 echo "==> Caddy (HTTPS и обратный прокси)"
-if [[ -n "$DOMAIN" ]]; then
-  sed "s/__SITE__/$DOMAIN/" "$APP_DIR/deploy/Caddyfile" > /etc/caddy/Caddyfile
-else
-  sed "s/__SITE__/:80/" "$APP_DIR/deploy/Caddyfile" | sed '/Strict-Transport-Security/d' > /etc/caddy/Caddyfile
-fi
-caddy validate --config /etc/caddy/Caddyfile
-systemctl enable caddy
-systemctl reload caddy || systemctl restart caddy
+bash "$APP_DIR/deploy/configure-caddy.sh" "$DOMAIN"
 
 echo "==> Резервные копии базы (ежедневно, 14 дней)"
 install -m 755 "$APP_DIR/deploy/finance-backup.sh" /usr/local/bin/finance-backup

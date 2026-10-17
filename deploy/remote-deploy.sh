@@ -56,6 +56,7 @@ else
 fi
 
 bash "$APP_DIR/deploy/sync-deploy-keys.sh"
+bash "$APP_DIR/deploy/configure-caddy.sh" "$DOMAIN"
 bash "$APP_DIR/deploy/harden-ssh.sh"
 
 # Образ хостинга открывает порт панели ispmanager — она не используется.
