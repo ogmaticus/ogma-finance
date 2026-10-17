@@ -25,7 +25,7 @@ with sync_playwright() as p:
         times = [i / fps for i in range(int(dur * fps))]
     start = int(os.environ.get('START', '0'))
     for i, t in enumerate(times):
-        if i < start:
+        if i < start or i >= int(os.environ.get('END', '999999')):
             continue
         pg.evaluate(f"render({t})")
         pg.screenshot(path=str(out / f"f{i:05d}.png"))

@@ -5,16 +5,19 @@ import numpy as np
 
 SR = 48000
 BEAT = 60 / 128
-DUR = 61 * BEAT
-DROP = 15 * BEAT
-CUTS = [9, 15, 23, 35, 44, 53]
+DUR = 31.8
+DROP = 7.47  # «Мультикнопка!» в озвучке
+OFF = DROP % BEAT
+CUTS = [4.62, 10.9, 15.1, 17.45, 19.55, 21.2, 26.55, 28.85]  # секунды
 n = int(SR * DUR)
 t = np.arange(n) / SR
 rng = np.random.default_rng(3)
 L = np.zeros(n); R = np.zeros(n)
 
 def add(sig, start, g=1.0, pan=0.0):
-    i = int(start * SR); j = min(n, i + len(sig))
+    i = int(start * SR)
+    if i < 0: sig = sig[-i:]; i = 0
+    j = min(n, i + len(sig))
     if i >= n or j <= i: return
     s = sig[: j - i] * g
     L[i:j] += s * np.sqrt((1 - pan) / 2); R[i:j] += s * np.sqrt((1 + pan) / 2)
@@ -48,7 +51,7 @@ bass = [41, 37, 44, 39]
 bar = 4 * BEAT
 
 # Пэд/стаб-аккорды с суперсо
-k = 0; s = 0.0
+k = -int(np.ceil(DROP / (2 * bar))); s = DROP + k * 2 * bar
 while s < DUR:
     ch = prog[k % 4]; N = int(2 * bar * SR)
     sig = sum(saw(f(m) * d, N) for m in ch for d in (0.996, 1.004))
@@ -59,20 +62,21 @@ while s < DUR:
 
 # Ритм
 for b in range(int(DUR / BEAT)):
-    B = b * BEAT
+    B = OFF + b * BEAT
+    if B >= DUR - BEAT: break
     if B >= DROP:
         add(kick(), B, .9)
         if b % 2 == 1: add(clap(), B, .5, .1)
         add(hat(True), B + BEAT / 2, .14, .35)
         add(hat(), B + BEAT / 4, .05, -.3); add(hat(), B + 3 * BEAT / 4, .05, -.3)
         # бас: восьмые с сайдчейном от бочки
-        idx = int((B - DROP) // (2 * bar)) % 4
+        idx = int((B - DROP + 1e-6) // (2 * bar)) % 4
         for half in (0, .5):
             N = int(BEAT / 2 * SR)
             x = lp(saw(f(bass[idx] - 12), N) + .5 * saw(f(bass[idx]), N), .08)
             add(x * env_ar(N, .01, .12), B + half * BEAT, .45)
     else:
-        if b % 2 == 0 and B >= BEAT * 3: add(kick(), B, .45)
+        if b % 2 == 0 and B >= OFF + BEAT * 3: add(kick(), B, .45)
         add(hat(), B + BEAT / 2, .07, .3)
 
 # Нарастание перед дропом: дробь + шумовой райзер
@@ -88,16 +92,16 @@ def impact():
     N = int(1.6 * SR); tt = np.arange(N) / SR
     return np.sin(2 * np.pi * (35 + 80 * np.exp(-tt * 8)) * tt) * np.exp(-tt * 2.2) + lp(rng.standard_normal(N), .1) * np.exp(-tt * 3) * .8
 add(impact(), DROP, 1.0)
-add(impact(), 49 * BEAT, .6)
+add(impact(), 21.97, .6)  # «бесплатно»
 
 # Вжухи на склейках
 for c in CUTS:
     N = int(.5 * SR); x = rng.standard_normal(N); tt = np.arange(N) / SR
-    add(lp(x, .15) * np.sin(np.pi * tt / .5) ** 2, c * BEAT - .3, .5, rng.uniform(-.6, .6))
+    add(lp(x, .15) * np.sin(np.pi * tt / .5) ** 2, c - .3, .5, rng.uniform(-.6, .6))
 
 # Финал: колокол
 N = int(3 * SR); tt = np.arange(N) / SR
-add(sum(np.sin(2 * np.pi * f(m) * tt) for m in [77, 80, 84, 89]) / 4 * np.exp(-tt * 1.4), 57 * BEAT, .4)
+add(sum(np.sin(2 * np.pi * f(m) * tt) for m in [77, 80, 84, 89]) / 4 * np.exp(-tt * 1.4), 29.5, .4)
 
 mix = np.stack([L, R], 1)
 fade = (np.minimum(1, (DUR - t) / 1.2) * np.minimum(1, t / .05))[:, None]
