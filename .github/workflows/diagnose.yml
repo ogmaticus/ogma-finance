@@ -29,7 +29,7 @@ jobs:
           note "local" "$(ssh server 'curl -sS -m 5 http://127.0.0.1:3000/healthz; echo; curl -sS -m 5 -o /dev/null -w "caddy:80 %{http_code}" http://127.0.0.1/finance' 2>&1)"
           note "finance-log" "$(ssh server 'journalctl -u finance -n 25 --no-pager -o cat' 2>&1)"
           note "caddy-log" "$(ssh server 'journalctl -u caddy -n 15 --no-pager -o cat; cat /etc/caddy/Caddyfile' 2>&1)"
-          note "mail-config" "$(ssh server 'grep -E "^(MAIL_TRANSPORT|SMTP_HOST|SMTP_PORT|SMTP_SECURE|MAIL_FROM|ALERT_EMAIL)=" /etc/finance/finance.env | sed -E "s/(=).*@/\1***@/"; grep -q "^SMTP_PASSWORD=." /etc/finance/finance.env && echo "SMTP_PASSWORD: set"; timeout 8 bash -c "</dev/tcp/smtp.yandex.ru/465" && echo "smtp.yandex.ru:465 reachable"; ufw status | grep -c ispmanager' 2>&1)"
+          note "mail-config" "$(ssh server 'grep -E "^(MAIL_TRANSPORT|SMTP_HOST|SMTP_PORT|SMTP_SECURE|MAIL_FROM|ALERT_EMAIL)=" /etc/finance/finance.env | sed -E "s/(=).*@/\1***@/"; grep -q "^SMTP_PASSWORD=." /etc/finance/finance.env && echo "SMTP_PASSWORD: set"; timeout 8 bash -c "</dev/tcp/mail.hosting.reg.ru/465" && echo "mail.hosting.reg.ru:465 reachable"; ufw status | grep -c ispmanager' 2>&1)"
           note "smtp-check" "$(ssh server 'cd /opt/finance && timeout 20 node --env-file=/etc/finance/finance.env backend/smtp-check.mjs' 2>&1)"
           note "backup-last" "$(ssh server 'journalctl -u finance-backup --since "-30h" -o cat --no-pager | tail -6; ls -la /var/backups/finance | tail -3' 2>&1)"
           note "versions" "$(ssh server 'lsb_release -ds; node --version; psql --version; caddy version; age --version; df -h / | tail -1; free -m | head -2' 2>&1)"

@@ -4,7 +4,7 @@ name: Deploy to server
 #   DEPLOY_HOST        — IP сервера
 #   DEPLOY_SSH_KEY     — закрытый ключ, которым GitHub входит на сервер (публичная часть — в /root/.ssh/authorized_keys)
 #   DEPLOY_KNOWN_HOSTS — необязательно: строка из `ssh-keyscan <IP>`; без неё ключ сервера принимается при первом входе
-#   SMTP_USER, SMTP_PASSWORD — необязательно: почта для кодов входа (Яндекс: адрес и пароль приложения)
+#   SMTP_USER, SMTP_PASSWORD — необязательно: почта для кодов входа (no-reply@multiknopka.ru, почта Рег.ру, mail.hosting.reg.ru:465)
 #   ALERT_EMAIL        — необязательно: куда слать оповещения о сбоях (по умолчанию SMTP_USER)
 # Переменная репозитория (необязательно): DEPLOY_DOMAIN — домен для HTTPS.
 
@@ -138,7 +138,7 @@ jobs:
           if [ -n "$SMTP_USER" ] && [ -n "$SMTP_PASSWORD" ]; then
             {
               echo "MAIL_TRANSPORT=smtp"
-              echo "SMTP_HOST=${SMTP_HOST:-smtp.yandex.ru}"
+              echo "SMTP_HOST=${SMTP_HOST:-mail.hosting.reg.ru}"
               echo "SMTP_PORT=465"
               echo "SMTP_SECURE=true"
               echo "SMTP_USER=$SMTP_USER"
