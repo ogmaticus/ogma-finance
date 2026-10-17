@@ -42,7 +42,8 @@ main {
 @media (min-width: 1500px) {
   main {
     max-width: none;
-    padding-inline: max(var(--gap-32), calc((100% - var(--sidebar-width) - 1440px) / 2));
+    --wide-gutter: calc((100% - var(--sidebar-width) - var(--content-wide-max)) / 2);
+    padding-inline: max(var(--gap-32), var(--wide-gutter));
   }
 }
 .app-header {

@@ -1,5 +1,6 @@
 :root {
   --sidebar-width: 220px;
+  --content-wide-max: 1440px;
   color-scheme: light;
   --bg: #f6f8fb;
   --surface: #ffffff;
